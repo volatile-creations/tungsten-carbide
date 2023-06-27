@@ -5,6 +5,8 @@ services:
   php:
     build:
       context: docker/php
+      args:
+        MYSQL: 1
     user: 1000:1000
     env_file:
       - .env

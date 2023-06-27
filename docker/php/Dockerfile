@@ -23,6 +23,9 @@ RUN apk add --no-cache fcgi \
 ARG XDEBUG=0
 RUN if [[ $XDEBUG -eq 1 ]]; then install-php-extensions xdebug; fi
 
+ARG MYSQL=0
+RUN if [[ $MYSQL -eq 1 ]]; then install-php-extensions pdo_mysql; fi
+
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD [ \
     "env", \
     "REQUEST_METHOD=GET", \
