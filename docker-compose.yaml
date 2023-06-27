@@ -1,9 +1,26 @@
 version: "3.9"
-name: apps
+name: tungsten-carbide
 
 services:
   php:
-    image: composer:2
-    entrypoint: php
+    build:
+      context: docker/php
+    user: 1000:1000
+    env_file:
+      - .env
+      - .env.local
     volumes:
-      - .:/app
+      - .:/var/www/html
+
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./docker/nginx/templates:/etc/nginx/templates:ro
+    depends_on:
+      php:
+        condition: service_healthy
+    env_file:
+      - .env
+      - .env.local
+    ports:
+      - "${HTTP_PORT}:80"
