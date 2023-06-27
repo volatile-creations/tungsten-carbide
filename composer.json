@@ -1,0 +1,16 @@
+{
+  "name": "volatile-creations/tungsten-carbide",
+  "description": "Application for the wedding of Els & Jan-Marten",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jan-Marten de Boer",
+      "email": "github@janmarten.name"
+    }
+  ],
+  "require": {
+    "php": "^8.2"
+  }
+}
