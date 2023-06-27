@@ -19,6 +19,11 @@ services:
     depends_on:
       php:
         condition: service_healthy
+    healthcheck:
+      test: wget -O /dev/null http://localhost
+      timeout: 3s
+      interval: 10s
+      retries: 3
     env_file:
       - .env
       - .env.local
