@@ -10,3 +10,8 @@
 
 # Docker local overrides
 /docker-compose.override.yaml
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

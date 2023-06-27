@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0.33
+    user: 1000:1000
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      start_period: 3s
+      interval: 3s
+      timeout: 20s
+      retries: 10
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+
+  php:
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
