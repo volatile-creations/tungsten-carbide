@@ -19,6 +19,9 @@ services:
       - ./docker/mysql/data:/var/lib/mysql
 
   php:
+    build:
+      args:
+        XDEBUG: 1
     depends_on:
       db:
         condition: service_healthy
