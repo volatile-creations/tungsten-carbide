@@ -72,7 +72,7 @@ services:
       app:
         condition: service_healthy
     healthcheck:
-      test: wget -O /dev/null http://localhost
+      test: wget -O /dev/null -U HEALTHCHECK http://localhost/version
       timeout: 3s
       interval: 10s
       retries: 3
