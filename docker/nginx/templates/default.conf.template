@@ -1,5 +1,5 @@
 upstream fastcgi_backend {
-    server php:9000;
+    server app:9000;
 }
 
 server {
@@ -12,11 +12,11 @@ server {
     }
 
     location ~ \.php$ {
-        try_files .~srcfile @php;
+        try_files .~srcfile @app;
         allow all;
     }
 
-    location @php {
+    location @app {
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         fastcgi_index index.php;
         fastcgi_pass fastcgi_backend;

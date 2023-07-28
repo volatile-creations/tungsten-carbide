@@ -2,11 +2,12 @@ version: "3.9"
 name: tungsten-carbide
 
 services:
-  php:
+  app:
+    restart: unless-stopped
     build:
-      context: docker/php
+      context: docker/php/fpm
       args:
-        MYSQL: 1
+        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql
     user: 1000:1000
     env_file:
       - .env
@@ -14,12 +15,33 @@ services:
     volumes:
       - .:/var/www/html
 
+  worker:
+    extends:
+      service: app
+    build:
+      context: docker/php/cli
+    entrypoint: >-
+      php bin/console messenger:consume 
+        --memory-limit 96M
+        --time-limit 300
+    command: async
+    healthcheck:
+      test: ps ax | grep -q messenger:consume
+      retries: 5
+      interval: 30s
+      timeout: 5s
+
+  scheduler:
+    extends:
+      service: worker
+    command: scheduler_maintenance
+
   web:
     image: nginx:alpine
     volumes:
       - ./docker/nginx/templates:/etc/nginx/templates:ro
     depends_on:
-      php:
+      app:
         condition: service_healthy
     healthcheck:
       test: wget -O /dev/null http://localhost
@@ -31,6 +53,3 @@ services:
       - .env.local
     ports:
       - "${HTTP_PORT}:80"
-
-volumes:
-  database_data:
