@@ -29,6 +29,20 @@ services:
     profiles:
       - composer
 
+  console:
+    extends:
+      service: composer
+    entrypoint: php bin/console
+    profiles:
+      - console
+
+  phpunit:
+    extends:
+      service: console
+    entrypoint: php bin/phpunit
+    profiles:
+      - phpunit
+
   worker:
     extends:
       service: app
