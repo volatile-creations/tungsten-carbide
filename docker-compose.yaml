@@ -15,6 +15,20 @@ services:
     volumes:
       - .:/var/www/html
 
+  composer:
+    extends:
+      service: app
+    restart: no
+    build:
+      context: docker/php/cli
+    entrypoint: composer
+    environment:
+      COMPOSER_HOME: /.composer
+    volumes:
+      - "./docker/php/composer:/.composer"
+    profiles:
+      - composer
+
   worker:
     extends:
       service: app
