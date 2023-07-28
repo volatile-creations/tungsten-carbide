@@ -1,3 +1,8 @@
+x-depends-on-db: &depends-on-db
+  depends_on:
+    db:
+      condition: service_healthy
+
 services:
   db:
     image: mysql:8.0.33
@@ -19,17 +24,16 @@ services:
       - ./docker/mysql/data:/var/lib/mysql
 
   app:
+    <<: *depends-on-db
     build:
       args:
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
       DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
 
   worker:
-    depends_on:
-      db:
-        condition: service_healthy
+    <<: *depends-on-db
     entrypoint: php bin/console messenger:consume --memory-limit 96M
+
+  scheduler:
+    <<: *depends-on-db
