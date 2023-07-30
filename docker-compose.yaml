@@ -9,9 +9,6 @@ services:
       args:
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql
     user: 1000:1000
-    env_file:
-      - .env
-      - .env.local
     volumes:
       - .:/var/www/html
 
@@ -39,6 +36,11 @@ services:
   phpunit:
     extends:
       service: console
+    build:
+      args:
+        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug
+    environment:
+      XDEBUG_MODE: coverage
     entrypoint: php bin/phpunit
     profiles:
       - phpunit

@@ -17,15 +17,15 @@ class User
     private Uuid $uuid;
 
     #[ORM\Column(type: 'string')]
-    #[Assert\Email]
+    #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_HTML5)]
     private string $emailAddress;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Length(
         min: 2,
         max: 50,
-        minMessage: 'Your name must be at least {{limit}} characters long',
-        maxMessage: 'Your name cannot be longer than {{limit}} characters'
+        minMessage: 'Your name must be at least {{ limit }} characters long',
+        maxMessage: 'Your name cannot be longer than {{ limit }} characters'
     )]
     private string $name;
 
