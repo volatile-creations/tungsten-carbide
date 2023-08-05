@@ -9,7 +9,7 @@
 ###< symfony/framework-bundle ###
 
 # Docker local overrides
-/docker-compose.override.yaml
+/docker-compose.override.yml
 
 ###> phpunit/phpunit ###
 /phpunit.xml
