@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Schedule;
+namespace App\Tests\Unit\Schedule;
 
 use App\Schedule\MaintenanceScheduleProvider;
 use PHPUnit\Framework\TestCase;

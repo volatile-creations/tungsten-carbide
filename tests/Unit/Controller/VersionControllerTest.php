@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller;
+namespace App\Tests\Unit\Controller;
 
 use App\Controller\VersionController;
 use PHPUnit\Framework\TestCase;
