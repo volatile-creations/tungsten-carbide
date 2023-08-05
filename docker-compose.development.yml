@@ -3,6 +3,14 @@ x-depends-on-db: &depends-on-db
     db:
       condition: service_healthy
 
+x-symfony-cli-consumer: &is-symfony-cli-consumer
+  entrypoint: >-
+    symfony run --watch=config,src,vendor
+      bin/console messenger:consume --memory-limit 96M --time-limit 300
+  build:
+    args:
+      APK_PACKAGES: symfony-cli
+
 services:
   db:
     image: mysql:8.0.33
@@ -34,8 +42,7 @@ services:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
 
   worker:
-    <<: *depends-on-db
-    entrypoint: php bin/console messenger:consume --memory-limit 96M
+    <<: [*depends-on-db, *is-symfony-cli-consumer]
 
   scheduler:
-    <<: *depends-on-db
+    <<: [*depends-on-db, *is-symfony-cli-consumer]
