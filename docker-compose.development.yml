@@ -30,6 +30,8 @@ services:
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug
     environment:
       DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
+    volumes:
+      - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
 
   worker:
     <<: *depends-on-db
