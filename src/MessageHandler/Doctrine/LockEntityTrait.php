@@ -6,6 +6,7 @@ namespace App\MessageHandler\Doctrine;
 
 use App\Entity\IdentifiableInterface;
 use App\MessageHandler\Exception\LockedEntityException;
+use Symfony\Component\Lock\Exception\LockAcquiringException;
 use Symfony\Component\Lock\Lock;
 use Symfony\Component\Lock\LockFactory;
 
@@ -18,12 +19,17 @@ trait LockEntityTrait
         callable $entityCallback,
         callable $acquireCallback
     ): mixed {
-        $lock = $this->lockFactory->createLock(
-            resource: $entity->getIdentifier()
-        );
+        $lock = $this->lockFactory->createLock($entity->getIdentifier());
 
-        if (!$acquireCallback($lock)) {
-            throw new LockedEntityException($entity);
+        try {
+            if (!$acquireCallback($lock)) {
+                throw new LockedEntityException($entity);
+            }
+        } catch (LockAcquiringException $exception) {
+            throw new LockedEntityException(
+                entity: $entity,
+                previous: $exception
+            );
         }
 
         try {
