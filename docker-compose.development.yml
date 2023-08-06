@@ -19,7 +19,7 @@ services:
       MYSQL_DATABASE: app
       MYSQL_USER: app
       MYSQL_PASSWORD: password
-      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: password
     healthcheck:
       test: mysqladmin ping -h localhost
       start_period: 3s
@@ -46,3 +46,40 @@ services:
 
   scheduler:
     <<: [*depends-on-db, *is-symfony-cli-consumer]
+
+  composer:
+    <<: *depends-on-db
+    extends:
+      service: app
+    restart: no
+    build:
+      context: docker/php/cli
+    entrypoint: composer
+    environment:
+      COMPOSER_HOME: /.composer
+    volumes:
+      - "./docker/php/composer:/.composer"
+      - "./:/var/www/html"
+    profiles:
+      - composer
+
+  console:
+    extends:
+      service: composer
+    entrypoint: php bin/console
+    profiles:
+      - console
+
+  phpunit:
+    extends:
+      service: console
+    build:
+      args:
+        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug
+    environment:
+      XDEBUG_MODE: coverage
+      APP_ENV: test
+      DATABASE_URL: "mysql://root:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
+    entrypoint: php bin/phpunit
+    profiles:
+      - phpunit

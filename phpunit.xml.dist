@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          colors="true"
@@ -24,4 +23,12 @@
             <directory>src</directory>
         </include>
     </source>
+    <extensions>
+        <bootstrap class="App\Tests\Extension\SymfonyExtension">
+            <parameter name="output" value="false"/>
+            <parameter name="clearCache" value="false"/>
+            <parameter name="migrateDatabase" value="true"/>
+            <parameter name="loadFixtures" value="false"/>
+        </bootstrap>
+    </extensions>
 </phpunit>

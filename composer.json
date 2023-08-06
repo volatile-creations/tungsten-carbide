@@ -66,7 +66,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Tests\\Unit\\": "tests/Unit/"
+      "App\\Tests\\Unit\\": "tests/Unit/",
+      "App\\Tests\\": "tests/"
     }
   },
   "replace": {
@@ -101,7 +102,6 @@
   },
   "require-dev": {
     "ext-pdo_mysql": "*",
-    "brianium/paratest": "^7.2",
     "phpunit/phpunit": "^10",
     "symfony/browser-kit": "6.3.*",
     "symfony/css-selector": "6.3.*",
