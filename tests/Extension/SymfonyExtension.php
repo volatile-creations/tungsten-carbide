@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Extension;
 
+use App\Tests\Event\TestRunner\SetupApplication;
 use PHPUnit\Runner\Extension\Extension;
 use PHPUnit\Runner\Extension\Facade;
 use PHPUnit\Runner\Extension\ParameterCollection;

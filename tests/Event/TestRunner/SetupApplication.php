@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Extension;
+namespace App\Tests\Event\TestRunner;
 
 use PHPUnit\Event\TestRunner\Started;
 use PHPUnit\Event\TestRunner\StartedSubscriber;
