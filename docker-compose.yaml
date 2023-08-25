@@ -7,10 +7,13 @@ services:
     build:
       context: docker/php/fpm
       args:
-        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql
+        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql @composer
     user: 1000:1000
+    environment:
+      COMPOSER_HOME: /.composer
     volumes:
       - .:/var/www/html
+      - ./docker/php/composer:/.composer
 
   worker:
     extends:
