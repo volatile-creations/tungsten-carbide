@@ -9,7 +9,7 @@ use ReflectionObject;
 use ReflectionProperty;
 use ReflectionUnionType;
 
-trait PayloadConvertible
+trait SerializesPayload
 {
     use SerializesAggregateRootId;
 
