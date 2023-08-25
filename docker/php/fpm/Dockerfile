@@ -5,7 +5,7 @@ FROM php:${PHP_VERSION}-fpm-alpine as php-fpm
 
 COPY --from=php-ext-installer --link /usr/bin/install-php-extensions /usr/local/bin/
 
-ARG PHP_EXTENSIONS
+ARG PHP_EXTENSIONS=""
 RUN if [[ "$PHP_EXTENSIONS" != "" ]]; then set -eux && install-php-extensions $PHP_EXTENSIONS; fi
 
 RUN set -eux \

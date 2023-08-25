@@ -8,8 +8,8 @@ FROM php:${PHP_VERSION}-cli-alpine as php-fpm
 COPY --from=composer --link /usr/bin/composer /usr/bin/composer
 COPY --from=php-ext-installer --link /usr/bin/install-php-extensions /usr/local/bin/
 
-ARG PHP_EXTENSIONS
-ARG APK_PACKAGES
+ARG PHP_EXTENSIONS=""
+ARG APK_PACKAGES=""
 RUN set -eux; \
     if [[ " $APK_PACKAGES " == *" symfony-cli "* ]]; then \
       apk add --no-cache bash curl \
