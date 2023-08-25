@@ -48,8 +48,5 @@ services:
       timeout: 3s
       interval: 10s
       retries: 3
-    env_file:
-      - .env
-      - .env.local
     ports:
       - "${HTTP_PORT}:80"
