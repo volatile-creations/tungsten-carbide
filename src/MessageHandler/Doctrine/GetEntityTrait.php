@@ -1,15 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\MessageHandler\Doctrine;
 
-use App\Entity\Identifier;
 use App\MessageHandler\Exception\MissingEntityException;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 
 trait GetEntityTrait
@@ -18,39 +16,51 @@ trait GetEntityTrait
 
     private readonly EntityManagerInterface $entityManager;
 
-    protected function get(string $entityClass, Uuid $uuid): object
+    public function get(string $entityClass, Uuid|Ulid|int $id): object
     {
         $entity = $this->lockRead(
-            entity: new Identifier($entityClass, $uuid),
-            callback: fn () => $this->getRepository($entityClass)->find($uuid)
+            identifier: new Identifier($entityClass, $id),
+            callback: fn () => $this->getRepository($entityClass)->find($id)
         );
 
         if ($entity === null) {
             throw new MissingEntityException(
                 entityClass: $entityClass,
-                uuid: $uuid
+                id: $id
             );
         }
 
         return $entity;
     }
 
-    protected function matching(
+    public function getBy(
+        string $entityClass,
+        array $criteria
+    ): array {
+        return $this->lockRead(
+            identifier: Identifier::all($entityClass),
+            callback: fn () => $this
+                ->getRepository($entityClass)
+                ->findBy($criteria)
+        );
+    }
+
+    public function matching(
         string $entityClass,
         Criteria $criteria
     ): Collection {
         return $this->lockRead(
-            entity: Identifier::all($entityClass),
+            identifier: Identifier::all($entityClass),
             callback: fn () => $this
                 ->getRepository($entityClass)
                 ->matching($criteria)
         );
     }
 
-    protected function all(string $entityClass): array
+    public function all(string $entityClass): array
     {
         return $this->lockRead(
-            entity: Identifier::all($entityClass),
+            identifier: Identifier::all($entityClass),
             callback: fn () => $this
                 ->getRepository($entityClass)
                 ->findAll()

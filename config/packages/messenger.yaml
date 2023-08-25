@@ -1,15 +1,21 @@
 framework:
     messenger:
-        default_bus: command.bus
+        default_bus: app.command.bus
         buses:
-            command.bus:
+            app.command.bus:
                 middleware:
-                    - validation
-                    - doctrine_transaction
-            query.bus:
-                middleware:
-                    - validation
+                    - dispatch_after_current_bus
+                    - doctrine_ping_connection
 
+            app.query.bus:
+                middleware:
+                    - dispatch_after_current_bus
+                    - doctrine_ping_connection
+
+            app.event.bus:
+                middleware:
+                    - dispatch_after_current_bus
+                    - doctrine_ping_connection
 
         failure_transport: failed
         transports:
@@ -33,4 +39,5 @@ framework:
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
             App\Message\CommandInterface: async
+            App\Message\EventInterface: async
             App\Message\QueryInterface: sync

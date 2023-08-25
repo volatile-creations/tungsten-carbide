@@ -1,21 +1,19 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\MessageBus;
 
 use App\Message\CommandInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-final readonly class CommandBus implements CommandBusInterface
+final class CommandBus implements CommandBusInterface
 {
     public function __construct(
-        private MessageBusInterface $commandBus
+        private readonly MessageBusInterface $appCommandBus
     ) {
     }
 
     public function dispatch(CommandInterface $command): void
     {
-        $this->commandBus->dispatch($command);
+        $this->appCommandBus->dispatch($command);
     }
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\MessageBus;
 
@@ -12,10 +10,9 @@ final class QueryBus implements QueryBusInterface
 {
     use HandleTrait;
 
-    public function __construct(
-        MessageBusInterface $queryBus
-    ) {
-        $this->messageBus = $queryBus;
+    public function __construct(MessageBusInterface $appQueryBus)
+    {
+        $this->messageBus = $appQueryBus;
     }
 
     public function ask(QueryInterface $query): mixed

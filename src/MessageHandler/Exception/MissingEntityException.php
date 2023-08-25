@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\MessageHandler\Exception;
 
@@ -11,10 +9,10 @@ final class MissingEntityException extends UnrecoverableMessageHandlingException
 {
     public function __construct(
         string $entityClass,
-        Uuid $uuid
+        Uuid|int $id
     ) {
         parent::__construct(
-            message: sprintf('Could not find %s<%s>', $entityClass, $uuid)
+            message: sprintf('Could not find %s<%s>', $entityClass, $id)
         );
     }
 }

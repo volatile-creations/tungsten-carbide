@@ -9,6 +9,12 @@ use Symfony\Component\Uid\Uuid;
 
 final readonly class GetUser implements QueryInterface
 {
-    public function __construct(public Uuid $uuid)
-    {}
+    public Uuid $uuid;
+
+    public function __construct(Uuid|string $uuid)
+    {
+        $this->uuid = $uuid instanceof Uuid
+            ? $uuid
+            : Uuid::fromString($uuid);
+    }
 }

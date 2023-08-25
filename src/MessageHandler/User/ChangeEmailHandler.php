@@ -6,16 +6,24 @@ namespace App\MessageHandler\User;
 
 use App\Entity\User;
 use App\Message\User\ChangeEmail;
-use App\MessageHandler\Doctrine\EntityCommandHandler;
+use App\MessageHandler\CommandHandlerInterface;
+use App\MessageHandler\Doctrine\EntityPersisterInterface;
+use App\MessageHandler\Doctrine\EntityReaderInterface;
 
-final readonly class ChangeEmailHandler extends EntityCommandHandler
+final readonly class ChangeEmailHandler implements CommandHandlerInterface
 {
+    public function __construct(
+        private EntityReaderInterface $entityReader,
+        private EntityPersisterInterface $entityPersister
+    ) {
+    }
+
     public function __invoke(ChangeEmail $command): void
     {
         /** @var User $user */
-        $user = $this->get(User::class, $command->uuid);
+        $user = $this->entityReader->get(User::class, $command->uuid);
         $user->setEmailAddress($command->emailAddress);
 
-        $this->persist($user);
+        $this->entityPersister->persist($user);
     }
 }

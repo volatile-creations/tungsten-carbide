@@ -1,39 +1,36 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\MessageHandler\Doctrine;
 
-use App\Entity\IdentifiableInterface;
 use App\MessageHandler\Exception\LockedEntityException;
 use Symfony\Component\Lock\Exception\LockAcquiringException;
-use Symfony\Component\Lock\Lock;
 use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\SharedLockInterface;
 
 trait LockEntityTrait
 {
-    private readonly LockFactory $lockFactory;
+    private readonly LockFactory $entityLockFactory;
 
     private function acquireLock(
-        IdentifiableInterface $entity,
+        Identifier $identifier,
         callable $entityCallback,
         callable $acquireCallback
     ): mixed {
-        $lock = $this->lockFactory->createLock($entity->getIdentifier());
+        $lock = $this->entityLockFactory->createLock((string)$identifier);
 
         try {
             if (!$acquireCallback($lock)) {
-                throw new LockedEntityException($entity);
+                throw new LockedEntityException($identifier);
             }
         } catch (LockAcquiringException $exception) {
             throw new LockedEntityException(
-                entity: $entity,
+                entity: $identifier,
                 previous: $exception
             );
         }
 
         try {
-            $result = $entityCallback($entity);
+            $result = $entityCallback($identifier);
         } finally {
             $lock->release();
         }
@@ -41,25 +38,21 @@ trait LockEntityTrait
         return $result;
     }
 
-    protected function lockRead(
-        IdentifiableInterface $entity,
-        callable $callback
-    ): mixed {
+    protected function lockRead(Identifier $identifier, callable $callback): mixed
+    {
         return $this->acquireLock(
-            entity: $entity,
+            identifier: $identifier,
             entityCallback: $callback,
-            acquireCallback: static fn (Lock $lock) => $lock->acquireRead()
+            acquireCallback: static fn (SharedLockInterface $lock) => $lock->acquireRead()
         );
     }
 
-    protected function lockWrite(
-        IdentifiableInterface $entity,
-        callable $callback
-    ): void {
+    protected function lockWrite(Identifier $identifier, callable $callback): void
+    {
         $this->acquireLock(
-            entity: $entity,
+            identifier: $identifier,
             entityCallback: $callback,
-            acquireCallback: static fn (Lock $lock) => $lock->acquire()
+            acquireCallback: static fn (SharedLockInterface $lock) => $lock->acquire()
         );
     }
 }

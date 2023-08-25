@@ -2,6 +2,6 @@
 
 namespace App\Message;
 
-interface QueryInterface
+interface EventInterface
 {
 }

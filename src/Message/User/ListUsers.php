@@ -11,7 +11,7 @@ final readonly class ListUsers implements QueryInterface
 {
     public function __construct(
         public Criteria $criteria = new Criteria(
-            orderings: ['name' => Criteria::ASC]
+            orderings: ['emailAddress' => Criteria::ASC]
         )
     ) {
     }

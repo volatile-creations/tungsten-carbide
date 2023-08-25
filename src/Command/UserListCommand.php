@@ -37,13 +37,12 @@ final class UserListCommand extends Command
         $table = $io->createTable();
 
         $table->setStyle('compact');
-        $table->setHeaders(['UUID', 'Name', 'E-mail address']);
+        $table->setHeaders(['UUID', 'E-mail address']);
 
         foreach ($users->results as $user) {
             $table->addRow(
                 [
                     sprintf('<comment>%s</comment>', $user->uuid),
-                    $user->name,
                     $user->emailAddress
                 ]
             );

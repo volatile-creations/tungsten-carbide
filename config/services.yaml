@@ -19,16 +19,21 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Message/'
-            - '../src/MessageHandler/Doctrine/'
+            - '../src/MessageHandler/Doctrine/*Trait.php'
             - '../src/Kernel.php'
 
     _instanceof:
-        App\MessageHandler\CommandHandlerInterface:
-            tags:
-                - name: messenger.message_handler
-                  bus: command.bus
-
         App\MessageHandler\QueryHandlerInterface:
             tags:
                 - name: messenger.message_handler
-                  bus: query.bus
+                  bus: app.query.bus
+
+        App\MessageHandler\CommandHandlerInterface:
+            tags:
+                - name: messenger.message_handler
+                  bus: app.command.bus
+
+        App\MessageHandler\EventHandlerInterface:
+            tags:
+                - name: messenger.message_handler
+                  bus: app.event.bus

@@ -11,7 +11,6 @@ final readonly class UserResult
 {
     public function __construct(
         public Uuid $uuid,
-        public string $name,
         public string $emailAddress
     ) {
     }
@@ -20,7 +19,6 @@ final readonly class UserResult
     {
         return new self(
             uuid: $user->getUuid(),
-            name: $user->getName(),
             emailAddress: $user->getEmailAddress()
         );
     }

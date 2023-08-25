@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Message\User\ChangeEmail;
-use App\Message\User\ChangeName;
 use App\MessageBus\CommandBusInterface;
 use App\MessageBus\QueryBusInterface;
 use LogicException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -22,9 +20,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class UserUpdateCommand extends Command
 {
-    use SelectsUser;
+    use HandlesUser, HandlesEmailAddress {
+        HandlesUser::configure as protected configureUserOption;
+        HandlesUser::interact as protected interactUser;
+        HandlesEmailAddress::configure as protected configureEmailOption;
+        HandlesEmailAddress::interact as protected interactEmail;
+    }
 
-    private const OPTION_NAME = 'name';
     private const OPTION_EMAIL = 'email';
 
     public function __construct(
@@ -37,33 +39,26 @@ final class UserUpdateCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption(
-            name: self::OPTION_NAME,
-            mode: InputOption::VALUE_REQUIRED,
-            description: 'The new e-mail address'
-        );
-        $this->addOption(
-            name: self::OPTION_EMAIL,
-            mode: InputOption::VALUE_REQUIRED,
-            description: 'The new e-mail address'
-        );
-        self::configureUserOption($this);
+        $this->configureEmailOption();
+        $this->configureUserOption();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    protected function interact(
+        InputInterface $input,
+        OutputInterface $output
+    ): void {
+        $this->interactUser($input, $output);
+        $this->interactEmail($input, $output);
+    }
+
+    protected function execute(
+        InputInterface $input,
+        OutputInterface $output
+    ): int {
         $user = $this->getUser($input);
-        $name = $input->getOption(self::OPTION_NAME);
-        $email = $input->getOption(self::OPTION_EMAIL);
+        $email = $this->getEmail($input);
 
         $commands = [];
-
-        if ($name !== null && $name !== $user->name) {
-            $commands[] = new ChangeName(
-                uuid: $user->uuid,
-                name: $name
-            );
-        }
 
         if ($email !== null && $email !== $user->emailAddress) {
             $commands[] = new ChangeEmail(
@@ -87,7 +82,6 @@ final class UserUpdateCommand extends Command
                 sprintf(
                     'Dispatch: change %s to "%s" for user %s',
                     match (get_class($command)) {
-                        ChangeName::class => 'name',
                         ChangeEmail::class => 'email',
                         default => throw new LogicException(
                             sprintf(
@@ -97,7 +91,6 @@ final class UserUpdateCommand extends Command
                         )
                     },
                     match (get_class($command)) {
-                        ChangeName::class => $command->name,
                         ChangeEmail::class => $command->emailAddress,
                         default => 'Unknown'
                     },
