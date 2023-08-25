@@ -10,10 +10,17 @@ use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
+use Symfony\Component\Uid\NilUuid;
+use Symfony\Component\Uid\Uuid;
 
 abstract class MessengerTestCase extends AggregateRootTestCase
 {
     abstract protected function getMessageHandlers(): Generator;
+
+    protected function newUuid(): Uuid
+    {
+        return new NilUuid();
+    }
 
     protected function getMessageHandlersLocator(): HandlersLocator
     {

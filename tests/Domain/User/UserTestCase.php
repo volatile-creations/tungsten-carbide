@@ -12,7 +12,6 @@ use App\MessageHandler\User\UpdateEmailAddressHandler;
 use App\Tests\Domain\MessengerTestCase;
 use EventSauce\EventSourcing\AggregateRootId;
 use Generator;
-use Symfony\Component\Uid\NilUuid;
 
 abstract class UserTestCase extends MessengerTestCase
 {
@@ -28,7 +27,7 @@ abstract class UserTestCase extends MessengerTestCase
 
     protected function newAggregateRootId(): AggregateRootId
     {
-        return new UserId(new NilUuid());
+        return new UserId($this->newUuid());
     }
 
     protected function aggregateRootClassName(): string
