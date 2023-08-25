@@ -2,6 +2,8 @@ x-depends-on-db: &depends-on-db
   depends_on:
     db:
       condition: service_healthy
+  environment:
+    DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
 
 x-symfony-cli-consumer: &is-symfony-cli-consumer
   entrypoint: >-
@@ -36,8 +38,6 @@ services:
     build:
       args:
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug @composer
-    environment:
-      DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
     volumes:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
 
