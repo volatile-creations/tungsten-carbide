@@ -10,7 +10,7 @@ use EventSauce\MessageRepository\TableSchema\TableSchema;
 
 abstract class MessageStorageMigration extends AbstractMigration
 {
-    abstract protected static function getTableName(): string;
+    abstract public function getTableName(): string;
 
     protected static function getTableSchema(): TableSchema
     {
@@ -19,7 +19,7 @@ abstract class MessageStorageMigration extends AbstractMigration
 
     public function getDescription(): string
     {
-        return sprintf('Create %s event store', static::getTableName());
+        return sprintf('Create %s event store', $this->getTableName());
     }
 
     /**
@@ -27,7 +27,7 @@ abstract class MessageStorageMigration extends AbstractMigration
      */
     public function up(Schema $schema): void
     {
-        $table = $schema->createTable(static::getTableName());
+        $table = $schema->createTable($this->getTableName());
         $tableSchema = static::getTableSchema();
 
         $table
@@ -69,8 +69,8 @@ abstract class MessageStorageMigration extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        if ($schema->hasTable(static::getTableName())) {
-            $schema->dropTable(static::getTableName());
+        if ($schema->hasTable($this->getTableName())) {
+            $schema->dropTable($this->getTableName());
         }
     }
 }

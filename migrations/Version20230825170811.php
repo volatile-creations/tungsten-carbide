@@ -11,7 +11,7 @@ use App\Migration\MessageStorageMigration;
  */
 final class Version20230825170811 extends MessageStorageMigration
 {
-    protected static function getTableName(): string
+    public function getTableName(): string
     {
         return 'user_events';
     }
