@@ -7,27 +7,23 @@ use App\Domain\User\User;
 use App\Domain\User\UserId;
 use App\Message\User\CreateUser;
 use App\Message\User\UpdateEmailAddress;
+use App\MessageHandler\User\CreateUserHandler;
+use App\MessageHandler\User\UpdateEmailAddressHandler;
+use App\Tests\Domain\MessengerTestCase;
 use EventSauce\EventSourcing\AggregateRootId;
-use EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase;
+use Generator;
 use Symfony\Component\Uid\NilUuid;
 
-abstract class UserTestCase extends AggregateRootTestCase
+abstract class UserTestCase extends MessengerTestCase
 {
-    /** @noinspection PhpParameterNameChangedDuringInheritanceInspection */
-    protected function handle(object $command): void
+    protected function getMessageHandlers(): Generator
     {
-        if ($command instanceof CreateUser) {
-            $aggregate = User::create($command->userId);
-            $aggregate->updateEmailAddress($command->emailAddress);
-            $this->repository->persist($aggregate);
-        }
-
-        if ($command instanceof UpdateEmailAddress) {
-            /** @var User $aggregate */
-            $aggregate = $this->repository->retrieve($command->userId);
-            $aggregate->updateEmailAddress($command->emailAddress);
-            $this->repository->persist($aggregate);
-        }
+        yield CreateUser::class => [
+            new CreateUserHandler($this->repository)
+        ];
+        yield UpdateEmailAddress::class => [
+            new UpdateEmailAddressHandler($this->repository)
+        ];
     }
 
     protected function newAggregateRootId(): AggregateRootId
