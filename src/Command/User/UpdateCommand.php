@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Command\User;
 
-use App\Message\User\ChangeEmail;
+use App\Message\User\UpdateEmailAddress;
 use App\MessageBus\CommandBusInterface;
 use App\MessageBus\QueryBusInterface;
 use LogicException;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:user:update',
     description: 'Update attributes for the given user.'
 )]
-final class UserUpdateCommand extends Command
+final class UpdateCommand extends Command
 {
     use HandlesUser, HandlesEmailAddress {
         HandlesUser::configure as protected configureUserOption;
@@ -61,8 +61,8 @@ final class UserUpdateCommand extends Command
         $commands = [];
 
         if ($email !== null && $email !== $user->emailAddress) {
-            $commands[] = new ChangeEmail(
-                uuid: $user->uuid,
+            $commands[] = new UpdateEmailAddress(
+                userId: $user->id,
                 emailAddress: $email
             );
         }
@@ -71,7 +71,7 @@ final class UserUpdateCommand extends Command
 
         if (count($commands) === 0) {
             $io->error(
-                sprintf('No changes found for user %s', $user->uuid)
+                sprintf('No changes found for user %s', $user->id->toString())
             );
             return self::FAILURE;
         }
@@ -82,7 +82,7 @@ final class UserUpdateCommand extends Command
                 sprintf(
                     'Dispatch: change %s to "%s" for user %s',
                     match (get_class($command)) {
-                        ChangeEmail::class => 'email',
+                        UpdateEmailAddress::class => 'email',
                         default => throw new LogicException(
                             sprintf(
                                 'Missing implementation for class %s',
@@ -91,10 +91,10 @@ final class UserUpdateCommand extends Command
                         )
                     },
                     match (get_class($command)) {
-                        ChangeEmail::class => $command->emailAddress,
+                        UpdateEmailAddress::class => $command->emailAddress,
                         default => 'Unknown'
                     },
-                    $user->uuid
+                    $user->id->toString()
                 )
             );
         }

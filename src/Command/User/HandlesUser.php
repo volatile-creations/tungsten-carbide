@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Command\User;
 
-use App\DTO\User\UserList;
 use App\DTO\User\User;
+use App\DTO\User\UserList;
 use App\Message\User\GetUser;
-use App\Message\User\ListUsers;
 use App\MessageBus\QueryBusInterface;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,6 +34,8 @@ trait HandlesUser
         OutputInterface $output
     ): void {
         if ($input->getOption(self::$optionUser) === null) {
+            throw new RuntimeException('Missing implementation to list users.');
+
             /** @var UserList $userList */
             $userList = $this->queryBus->ask(new ListUsers());
             $io = new SymfonyStyle($input, $output);
@@ -47,7 +49,7 @@ trait HandlesUser
                             $userList->results,
                             static fn (array $carry, User $result) => [
                                 ...$carry,
-                                (string)$result->uuid => $result->emailAddress
+                                $result->id->toString() => $result->emailAddress
                             ],
                             []
                         )
@@ -60,7 +62,7 @@ trait HandlesUser
     private function getUser(InputInterface $input): User
     {
         return $this->queryBus->ask(
-            new GetUser(uuid: $input->getOption(self::$optionUser))
+            new GetUser(userId: $input->getOption(self::$optionUser))
         );
     }
 }

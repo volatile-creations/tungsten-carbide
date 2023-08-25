@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Command\User;
 
+use App\Domain\User\UserId;
 use App\Message\User\NextUser;
 use App\MessageBus\QueryBusInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -11,13 +12,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Uid\Uuid;
 
 #[AsCommand(
     name: 'app:user:create',
     description: 'Create a new user.'
 )]
-final class UserCreateCommand extends Command
+final class CreateCommand extends Command
 {
     use HandlesEmailAddress;
 
@@ -32,15 +32,15 @@ final class UserCreateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var Uuid $uuid */
-        $uuid = $this->queryBus->ask(
+        /** @var UserId $userId */
+        $userId = $this->queryBus->ask(
             new NextUser(
                 emailAddress: $input->getOption(self::OPTION_EMAIL)
             )
         );
 
         $io = new SymfonyStyle($input, $output);
-        $io->success(sprintf('User requested: %s', $uuid));
+        $io->success(sprintf('User requested: %s', $userId->toString()));
 
         return self::SUCCESS;
     }

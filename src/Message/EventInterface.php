@@ -2,6 +2,8 @@
 
 namespace App\Message;
 
-interface EventInterface
+use EventSauce\EventSourcing\Serialization\SerializablePayload;
+
+interface EventInterface extends SerializablePayload
 {
 }

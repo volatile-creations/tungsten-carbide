@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\MessageHandler\User;
 
+use App\Domain\User\UserId;
 use App\Message\User\NextUser;
 use App\Message\User\UserRequested;
 use App\Message\Uuid\NextIdentifier;
 use App\MessageBus\EventBusInterface;
 use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\QueryHandlerInterface;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class NextUserHandler implements QueryHandlerInterface
 {
@@ -19,17 +19,17 @@ final readonly class NextUserHandler implements QueryHandlerInterface
     ) {
     }
 
-    public function __invoke(NextUser $query): Uuid
+    public function __invoke(NextUser $query): UserId
     {
-        $uuid = $this->queryBus->ask(new NextIdentifier());
+        $userId = new UserId($this->queryBus->ask(new NextIdentifier()));
 
         $this->eventBus->dispatch(
             new UserRequested(
-                uuid: $uuid,
+                userId: $userId,
                 emailAddress: $query->emailAddress
             )
         );
 
-        return $uuid;
+        return $userId;
     }
 }

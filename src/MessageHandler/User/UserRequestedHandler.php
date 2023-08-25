@@ -18,7 +18,7 @@ final readonly class UserRequestedHandler implements EventHandlerInterface
     {
         $this->commandBus->dispatch(
             new CreateUser(
-                uuid: $event->uuid,
+                userId: $event->userId,
                 emailAddress: $event->emailAddress
             )
         );

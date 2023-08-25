@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Command\User;
 
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;

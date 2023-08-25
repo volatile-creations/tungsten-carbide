@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Message\User;
@@ -6,9 +7,9 @@ namespace App\Message\User;
 use App\Domain\PayloadConvertible;
 use App\Domain\User\SerializesUserId;
 use App\Domain\User\UserId;
-use App\Message\EventInterface;
+use App\Message\CommandInterface;
 
-final readonly class UserRequested implements EventInterface
+final readonly class UpdateEmailAddress implements CommandInterface
 {
     use PayloadConvertible, SerializesUserId;
 

@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Message\User;
 
+use App\Domain\User\UserId;
 use App\Message\QueryInterface;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class GetUser implements QueryInterface
 {
-    public Uuid $uuid;
+    public UserId $userId;
 
-    public function __construct(Uuid|string $uuid)
+    public function __construct(UserId|string $userId)
     {
-        $this->uuid = $uuid instanceof Uuid
-            ? $uuid
-            : Uuid::fromString($uuid);
+        $this->userId = $userId instanceof UserId
+            ? $userId
+            : UserId::fromString($userId);
     }
 }
