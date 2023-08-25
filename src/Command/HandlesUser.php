@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Query\UserListResult;
-use App\Entity\Query\UserResult;
+use App\DTO\User\UserList;
+use App\DTO\User\User;
 use App\Message\User\GetUser;
 use App\Message\User\ListUsers;
 use App\MessageBus\QueryBusInterface;
@@ -34,7 +34,7 @@ trait HandlesUser
         OutputInterface $output
     ): void {
         if ($input->getOption(self::$optionUser) === null) {
-            /** @var UserListResult $userList */
+            /** @var UserList $userList */
             $userList = $this->queryBus->ask(new ListUsers());
             $io = new SymfonyStyle($input, $output);
 
@@ -45,7 +45,7 @@ trait HandlesUser
                         question: 'Select a user',
                         choices: array_reduce(
                             $userList->results,
-                            static fn (array $carry, UserResult $result) => [
+                            static fn (array $carry, User $result) => [
                                 ...$carry,
                                 (string)$result->uuid => $result->emailAddress
                             ],
@@ -57,7 +57,7 @@ trait HandlesUser
         }
     }
 
-    private function getUser(InputInterface $input): UserResult
+    private function getUser(InputInterface $input): User
     {
         return $this->queryBus->ask(
             new GetUser(uuid: $input->getOption(self::$optionUser))

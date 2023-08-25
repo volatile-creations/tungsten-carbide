@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Query\UserListResult;
+use App\DTO\User\UserList;
 use App\Message\User\ListUsers;
 use App\MessageBus\QueryBusInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,7 +30,7 @@ final class UserListCommand extends Command
         InputInterface $input,
         OutputInterface $output
     ): int {
-        /** @var UserListResult $users */
+        /** @var UserList $users */
         $users = $this->queryBus->ask(new ListUsers());
 
         $io = new SymfonyStyle($input, $output);

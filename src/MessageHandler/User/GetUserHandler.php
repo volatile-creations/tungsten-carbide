@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\MessageHandler\User;
 
-use App\Entity\Query\UserResult;
-use App\Entity\User;
+use App\DTO\User\User;
+use App\Entity\User as UserEntity;
 use App\Message\User\GetUser;
 use App\MessageHandler\Doctrine\EntityReaderInterface;
 use App\MessageHandler\QueryHandlerInterface;
@@ -16,10 +16,10 @@ final readonly class GetUserHandler implements QueryHandlerInterface
     {
     }
 
-    public function __invoke(GetUser $query): UserResult
+    public function __invoke(GetUser $query): User
     {
-        return UserResult::fromUser(
-            $this->entityReader->get(User::class, $query->uuid)
+        return User::fromUser(
+            $this->entityReader->get(UserEntity::class, $query->uuid)
         );
     }
 }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Query;
+namespace App\DTO\User;
 
-use App\Entity\User;
+use App\Entity\User as UserEntity;
 use Symfony\Component\Uid\Uuid;
 
-final readonly class UserResult
+final readonly class User
 {
     public function __construct(
         public Uuid $uuid,
@@ -15,7 +15,7 @@ final readonly class UserResult
     ) {
     }
 
-    public static function fromUser(User $user): self
+    public static function fromUser(UserEntity $user): self
     {
         return new self(
             uuid: $user->getUuid(),

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Entity\Query;
+namespace App\DTO\User;
 
-final readonly class UserListResult
+final readonly class UserList
 {
-    /** @var array<UserResult> */
+    /** @var array<User> */
     public array $results;
 
     public function __construct(
-        UserResult ...$results
+        User ...$results
     ) {
         $this->results = $results;
     }
