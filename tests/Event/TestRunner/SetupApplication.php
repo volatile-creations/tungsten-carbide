@@ -61,7 +61,7 @@ final readonly class SetupApplication implements StartedSubscriber
 
         $process = new Process(command: ['bin/console', ...$arguments]);
         $process->setWorkingDirectory(
-            realpath(__DIR__ . '/../../')
+            realpath(__DIR__ . '/../../../')
         );
         $process->setEnv(
             [
