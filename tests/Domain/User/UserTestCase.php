@@ -10,10 +10,13 @@ use App\Message\User\UpdateEmailAddress;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\UpdateEmailAddressHandler;
 use App\Tests\Domain\MessengerTestCase;
+use App\Tests\Domain\CreatesUuid;
 use EventSauce\EventSourcing\AggregateRootId;
 
 abstract class UserTestCase extends MessengerTestCase
 {
+    use CreatesUuid;
+
     protected function getMessageHandlers(): iterable
     {
         yield CreateUser::class => [
