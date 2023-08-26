@@ -72,13 +72,19 @@ services:
             $aggregateRootClassName: App\Domain\User\User
             $messageRepository: '@domain.user.message_repository'
 
+    domain.message_repository.container:
+        class: ArrayObject
+        arguments:
+            $array:
+                user: '@domain.user.message_repository'
+
+    domain.message_consumer.container:
+        class: ArrayObject
+        arguments:
+            $array:
+                user_list: '@App\MessageConsumer\User\UserListProjector'
+
     App\Command\Event\ReplayCommand:
-        calls:
-            - method: registerRepository
-              arguments:
-                  $name: 'user'
-                  $repository: '@domain.user.message_repository'
-            - method: registerConsumer
-              arguments:
-                  $name: 'user_list'
-                  $consumer: '@App\MessageConsumer\User\UserListProjector'
+        arguments:
+            $messageRepositories: '@domain.message_repository.container'
+            $messageConsumers: '@domain.message_consumer.container'

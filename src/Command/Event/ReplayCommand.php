@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Command\Event;
 
 use App\MessageConsumer\MessageConsumerChain;
-use EventSauce\EventSourcing\MessageConsumer;
+use ArrayObject;
 use EventSauce\EventSourcing\MessageRepository;
 use EventSauce\EventSourcing\OffsetCursor;
 use EventSauce\EventSourcing\ReplayingMessages\ReplayMessages;
@@ -27,24 +27,12 @@ final class ReplayCommand extends Command
     private const OPTION_CONSUMER = 'consumer';
     private const OPTION_BATCH_SIZE = 'batch-size';
 
-    /** @var array<string,MessageRepository> */
-    private array $repositories = [];
-
-    /** @var array<string,MessageConsumer> */
-    private array $consumers = [];
-
-    public function registerRepository(
-        string $name,
-        MessageRepository $repository
-    ): void {
-        $this->repositories[$name] = $repository;
-    }
-
-    public function registerConsumer(
-        string $name,
-        MessageConsumer $consumer
-    ): void {
-        $this->consumers[$name] = $consumer;
+    public function __construct(
+        private readonly ArrayObject $messageRepositories,
+        private readonly ArrayObject $messageConsumers,
+        string $name = null
+    ) {
+        parent::__construct($name);
     }
 
     protected function configure(): void
@@ -62,7 +50,7 @@ final class ReplayCommand extends Command
         $this->addOption(
             name: self::OPTION_BATCH_SIZE,
             mode: InputOption::VALUE_REQUIRED,
-            description: 'How many messages are consumed at-most simultaneously.',
+            description: 'How many messages are used at-most per aggregate batch.',
             default: 100
         );
     }
@@ -71,11 +59,24 @@ final class ReplayCommand extends Command
         InputInterface $input,
         OutputInterface $output
     ): void {
+        $io = new SymfonyStyle($input, $output);
+
+        if ($input->getArgument(self::ARGUMENT_REPOSITORY) === null) {
+            $input->setArgument(
+                self::ARGUMENT_REPOSITORY,
+                $io->askQuestion(
+                    new ChoiceQuestion(
+                        'Select a message repository',
+                        array_keys($this->messageRepositories->getArrayCopy())
+                    )
+                )
+            );
+        }
+
         if ($input->getOption(self::OPTION_CONSUMER) === []) {
-            $io = new SymfonyStyle($input, $output);
             $consumers = [];
             $break = 'Done adding consumers.';
-            $options = [...array_keys($this->consumers), $break];
+            $options = [...array_keys($this->messageConsumers->getArrayCopy()), $break];
             $question = new ChoiceQuestion(
                 'Which consumer should be used?',
                 $options
@@ -99,7 +100,7 @@ final class ReplayCommand extends Command
     ): int {
         $io = new SymfonyStyle($input, $output);
         $consumers = array_map(
-            fn (string $consumer) => $this->consumers[$consumer],
+            fn (string $consumer) => $this->messageConsumers->offsetGet($consumer),
             $input->getOption(self::OPTION_CONSUMER)
         );
 
@@ -109,7 +110,7 @@ final class ReplayCommand extends Command
         }
 
         $repositoryName = $input->getArgument(self::ARGUMENT_REPOSITORY);
-        $repository = $this->repositories[$repositoryName] ?? null;
+        $repository = $this->messageRepositories->offsetGet($repositoryName);
 
         if (!$repository instanceof MessageRepository) {
             $io->error(
@@ -132,17 +133,14 @@ final class ReplayCommand extends Command
 
         $batch = 0;
 
-        process_batch:
-        $io->write(sprintf('Batch #%d: ', ++$batch));
-        $result = $replayMessages->replayBatch($cursor);
-        $cursor = $result->cursor();
-        $io->writeln(
-            sprintf('Handled %d messages', $result->messagesHandled())
-        );
-
-        if ($result->messagesHandled() > 0) {
-            goto process_batch;
-        }
+        do {
+            $io->write(sprintf('Batch #%d: ', ++$batch));
+            $result = $replayMessages->replayBatch($cursor);
+            $cursor = $result->cursor();
+            $io->writeln(
+                sprintf('Handled %d messages', $result->messagesHandled())
+            );
+        } while ($result->messagesHandled() > 0);
 
         return self::SUCCESS;
     }
