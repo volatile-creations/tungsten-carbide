@@ -7,8 +7,8 @@ namespace App\Command\User;
 use App\DTO\User\User;
 use App\DTO\User\UserList;
 use App\Message\User\GetUser;
+use App\Message\User\GetUserList;
 use App\MessageBus\QueryBusInterface;
-use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,10 +34,8 @@ trait HandlesUser
         OutputInterface $output
     ): void {
         if ($input->getOption(self::$optionUser) === null) {
-            throw new RuntimeException('Missing implementation to list users.');
-
             /** @var UserList $userList */
-            $userList = $this->queryBus->ask(new ListUsers());
+            $userList = $this->queryBus->ask(new GetUserList());
             $io = new SymfonyStyle($input, $output);
 
             $input->setOption(

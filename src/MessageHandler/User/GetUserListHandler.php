@@ -6,6 +6,7 @@ namespace App\MessageHandler\User;
 use App\DTO\User\UserList;
 use App\Message\User\GetUserList;
 use App\MessageHandler\QueryHandlerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final readonly class GetUserListHandler implements QueryHandlerInterface
@@ -18,8 +19,14 @@ final readonly class GetUserListHandler implements QueryHandlerInterface
 
     public function __invoke(GetUserList $query): UserList
     {
-        return file_exists($this->projectionFile)
+        $userList = file_exists($this->projectionFile)
             ? include $this->projectionFile
             : new UserList();
+
+        $users = new ArrayCollection($userList->results);
+
+        return new UserList(
+            ...$users->matching($query->criteria)->toArray()
+        );
     }
 }
