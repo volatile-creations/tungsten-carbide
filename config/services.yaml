@@ -41,6 +41,11 @@ services:
                 - name: messenger.message_handler
                   bus: app.event.bus
 
+        EventSauce\EventSourcing\MessageConsumer:
+            tags:
+                - name: messenger.message_handler
+                  bus: app.command.bus
+
     domain.message_serializer:
         class: EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer
 
@@ -53,6 +58,8 @@ services:
     domain.aggregate_root_repository.abstract:
         abstract: true
         class: EventSauce\EventSourcing\EventSourcedAggregateRootRepository
+        arguments:
+            $dispatcher: '@App\MessageDispatcher\MessageBusDispatcher'
 
     domain.user.message_repository:
         parent: domain.message_repository.abstract
