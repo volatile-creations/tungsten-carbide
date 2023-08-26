@@ -9,13 +9,14 @@ use App\Message\User\CreateUser;
 use App\Message\User\UpdateEmailAddress;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\UpdateEmailAddressHandler;
-use App\Tests\Domain\MessengerTestCase;
 use App\Tests\Domain\CreatesUuid;
+use App\Tests\Domain\HandlesMessages;
 use EventSauce\EventSourcing\AggregateRootId;
+use EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase;
 
-abstract class UserTestCase extends MessengerTestCase
+abstract class UserTestCase extends AggregateRootTestCase
 {
-    use CreatesUuid;
+    use CreatesUuid, HandlesMessages;
 
     protected function getMessageHandlers(): iterable
     {

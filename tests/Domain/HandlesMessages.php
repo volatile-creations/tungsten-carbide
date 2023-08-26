@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Domain;
 
-use EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
 
-abstract class MessengerTestCase extends AggregateRootTestCase
+trait HandlesMessages
 {
     private MessageBusInterface $messageBus;
 
