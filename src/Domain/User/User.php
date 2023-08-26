@@ -77,4 +77,16 @@ final class User implements AggregateRoot
     ): void {
         $this->emailAddress = $event->newEmailAddress;
     }
+
+    public function rejectEmailAddress(string $emailAddress): void
+    {
+        $this->recordThat(
+            new EmailAddressWasRejected($emailAddress)
+        );
+    }
+
+    public function applyEmailAddressWasRejected(): void
+    {
+        // no-op.
+    }
 }

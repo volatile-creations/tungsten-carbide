@@ -5,10 +5,12 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\User;
 use App\Domain\User\UserId;
+use App\Message\QueryInterface;
 use App\Message\User\AttachRole;
 use App\Message\User\CreateUser;
 use App\Message\User\DetachRole;
 use App\Message\User\UpdateEmailAddress;
+use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\User\AttachRoleHandler;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\DetachRoleHandler;
@@ -17,10 +19,37 @@ use App\Tests\Domain\CreatesUuid;
 use App\Tests\Domain\HandlesMessages;
 use EventSauce\EventSourcing\AggregateRootId;
 use EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 abstract class UserTestCase extends AggregateRootTestCase
 {
     use CreatesUuid, HandlesMessages;
+
+    protected function createQueryBus(): QueryBusInterface
+    {
+        $bus = $this->createMock(QueryBusInterface::class);
+
+        $matcher = self::any();
+        $bus
+            ->expects($matcher)
+            ->method('ask')
+            ->with(self::isInstanceOf(QueryInterface::class))
+            ->willReturnCallback(
+                fn (QueryInterface $query) => $this->handleQuery(
+                    $query,
+                    $matcher
+                )
+            );
+
+        return $bus;
+    }
+
+    protected function handleQuery(
+        QueryInterface $query,
+        InvocationOrder $invocationOrder
+    ): mixed {
+        return null;
+    }
 
     protected function getMessageHandlers(): iterable
     {
@@ -28,7 +57,10 @@ abstract class UserTestCase extends AggregateRootTestCase
             new CreateUserHandler($this->repository)
         ];
         yield UpdateEmailAddress::class => [
-            new UpdateEmailAddressHandler($this->repository)
+            new UpdateEmailAddressHandler(
+                userRepository: $this->repository,
+                queryBus: $this->createQueryBus()
+            )
         ];
         yield AttachRole::class => [
             new AttachRoleHandler($this->repository)
