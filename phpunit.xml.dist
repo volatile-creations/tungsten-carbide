@@ -30,7 +30,7 @@
         <bootstrap class="App\Tests\Extension\SymfonyExtension">
             <parameter name="output" value="false"/>
             <parameter name="clearCache" value="false"/>
-            <parameter name="migrateDatabase" value="true"/>
+            <parameter name="migrateDatabase" value="false"/>
             <parameter name="loadFixtures" value="false"/>
         </bootstrap>
     </extensions>
