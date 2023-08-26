@@ -9,17 +9,30 @@ use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
-use Symfony\Component\Uid\NilUuid;
+use Symfony\Component\Uid\Factory\UuidFactory;
 use Symfony\Component\Uid\Uuid;
 
 abstract class MessengerTestCase extends AggregateRootTestCase
 {
-    abstract protected function getMessageHandlers(): iterable;
+    private MessageBusInterface $messageBus;
+    private UuidFactory $uuidFactory;
+
+    protected function createUuidFactory(): UuidFactory
+    {
+        return new UuidFactory();
+    }
+
+    protected function getUuidFactory(): UuidFactory
+    {
+        return $this->uuidFactory ??= $this->createUuidFactory();
+    }
 
     protected function newUuid(): Uuid
     {
-        return new NilUuid();
+        return $this->getUuidFactory()->randomBased()->create();
     }
+
+    abstract protected function getMessageHandlers(): iterable;
 
     protected function getMessageHandlersLocator(): HandlersLocator
     {
@@ -49,12 +62,18 @@ abstract class MessengerTestCase extends AggregateRootTestCase
         );
     }
 
+    protected function getMessageBus(): MessageBusInterface
+    {
+        return $this->messageBus ??= $this->createMessageBus();
+    }
+
     protected function handle(...$arguments): void
     {
-        $bus = $this->createMessageBus();
         array_walk(
             $arguments,
-            static fn (object $message) => $bus->dispatch($message)
+            fn (object $message) => $this
+                ->getMessageBus()
+                ->dispatch($message)
         );
     }
 }
