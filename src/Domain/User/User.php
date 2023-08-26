@@ -62,12 +62,14 @@ final class User implements AggregateRoot
             return;
         }
 
-        $this->recordThat(
-            new EmailAddressWasUpdated(
-                newEmailAddress: $emailAddress,
-                oldEmailAddress: $this->emailAddress
-            )
-        );
+        if ($emailAddress !== $this->emailAddress) {
+            $this->recordThat(
+                new EmailAddressWasUpdated(
+                    newEmailAddress: $emailAddress,
+                    oldEmailAddress: $this->emailAddress
+                )
+            );
+        }
     }
 
     public function applyEmailAddressWasUpdated(

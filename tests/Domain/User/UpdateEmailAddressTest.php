@@ -56,4 +56,20 @@ final class UpdateEmailAddressTest extends UserTestCase
                 )
             );
     }
+
+    public function testUpdateTheSameEmailAddress(): void
+    {
+        $userId = $this->aggregateRootId();
+        $this
+            ->given(
+                new EmailAddressWasUpdated(
+                    newEmailAddress: 'user@domain.tld',
+                    oldEmailAddress: ''
+                )
+            )
+            ->when(
+                new UpdateEmailAddress($userId, 'user@domain.tld')
+            )
+            ->thenNothingShouldHaveHappened();
+    }
 }
