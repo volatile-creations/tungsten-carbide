@@ -1,0 +1,30 @@
+name: Continuous integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  grumphp:
+    name: GrumPHP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: apcu, intl, opcache, zip, pdo_mysql
+          tools: composer:v2
+          coverage: none
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Composer packages
+        run: composer install --dev
+
+      - name: Run GrumPHP
+        run: vendor/bin/grumphp run
