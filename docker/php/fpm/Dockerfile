@@ -8,8 +8,9 @@ COPY --from=php-ext-installer --link /usr/bin/install-php-extensions /usr/local/
 ARG PHP_EXTENSIONS=""
 RUN if [[ "$PHP_EXTENSIONS" != "" ]]; then set -eux && install-php-extensions $PHP_EXTENSIONS; fi
 
+ARG APK_PACKAGES=""
 RUN set -eux \
-    && apk add --no-cache fcgi \
+    && apk add --no-cache fcgi $APK_PACKAGES \
     && { \
         echo '[www]'; \
         echo 'ping.path = /ping'; \

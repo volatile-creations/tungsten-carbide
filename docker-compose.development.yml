@@ -38,6 +38,7 @@ services:
     build:
       args:
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug @composer
+        APK_PACKAGES: git
     volumes:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
 

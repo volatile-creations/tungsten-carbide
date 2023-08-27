@@ -1,0 +1,49 @@
+grumphp:
+  ascii:
+    failed: ~
+    succeeded: ~
+
+  parallel:
+    enabled: true
+
+  tasks:
+    composer:
+      strict: true
+      metadata:
+        label: Composer
+
+    jsonlint:
+      detect_key_conflicts: true
+      metadata:
+        label: JSON lint
+
+    xmllint:
+      load_from_net: false
+      x_include: true
+      dtd_validation: true
+      scheme_validation: true
+      triggered_by: [xml]
+      ignore_patterns: []
+      metadata:
+        label: XML lint
+
+    phpunit:
+      config_file: ./phpunit.xml.dist
+      always_execute: true
+      metadata:
+        label: PHP unit tests
+
+    phpparser:
+      ignore_patterns:
+        - /^vendor\/.+/
+        - /^config\/.+/
+        - /^public\/.+/
+        - /^src\/Kernel.php$/
+        - /^tests\/bootstrap.php$/
+      triggered_by: [php]
+      visitors:
+        declare_strict_types: ~
+        never_use_else: ~
+        no_exit_statements: ~
+      metadata:
+        label: PHP parser
