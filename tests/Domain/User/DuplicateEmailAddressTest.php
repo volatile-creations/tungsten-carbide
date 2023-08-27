@@ -59,15 +59,15 @@ final class DuplicateEmailAddressTest extends UserTestCase
         QueryInterface $query,
         InvocationOrder $invocationOrder
     ): mixed {
-        if ($query instanceof GetUserByEmail
-            && $query->emailAddress === self::DUPLICATE_EMAIL_ADDRESS
-        ) {
-            return new UserDTO(
-                id: $this->aggregateRootId(),
-                emailAddress: $query->emailAddress
-            );
-        }
-
-        return parent::handleQuery($query, $invocationOrder);
+        return match(get_class($query)) {
+            GetUserByEmail::class => match($query->emailAddress) {
+                self::DUPLICATE_EMAIL_ADDRESS => new UserDTO(
+                    id: $this->aggregateRootId(),
+                    emailAddress: $query->emailAddress
+                ),
+                default => null
+            },
+            default => parent::handleQuery($query, $invocationOrder)
+        };
     }
 }

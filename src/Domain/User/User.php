@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
+use App\Security\User\User as SecurityUser;
 use EventSauce\EventSourcing\AggregateRoot;
 use EventSauce\EventSourcing\AggregateRootBehaviour;
+use RuntimeException;
 
 final class User implements AggregateRoot
 {
@@ -15,6 +17,7 @@ final class User implements AggregateRoot
     private bool $active = false;
     private string $emailAddress = '';
     private array $roles = [];
+    private string $passwordHash = '';
 
     public static function create(UserId $id): self
     {
@@ -119,5 +122,41 @@ final class User implements AggregateRoot
     public function applyUserWasDeleted(): void
     {
         $this->active = false;
+    }
+
+    public function updatePasswordHash(string $passwordHash): void
+    {
+        if ($this->active && $this->passwordHash !== $passwordHash) {
+            $this->recordThat(new PasswordWasUpdated($passwordHash));
+        }
+    }
+
+    public function applyPasswordWasUpdated(PasswordWasUpdated $event): void
+    {
+        $this->passwordHash = $event->passwordHash;
+    }
+
+    public function asSecurityUser(): SecurityUser
+    {
+        if ($this->active === false) {
+            throw new RuntimeException(
+                'Cannot convert deleted user to security user.'
+            );
+        }
+
+        if (empty($this->emailAddress)) {
+            throw new RuntimeException(
+                'Cannot put user in security context without email address.'
+            );
+        }
+
+        return new SecurityUser(
+            identifier: $this->emailAddress,
+            passwordHash: $this->passwordHash,
+            roles: array_map(
+                static fn (Role $role) => $role->value,
+                $this->roles
+            )
+        );
     }
 }

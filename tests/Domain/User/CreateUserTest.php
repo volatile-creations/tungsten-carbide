@@ -86,15 +86,15 @@ final class CreateUserTest extends UserTestCase
         QueryInterface $query,
         InvocationOrder $invocationOrder
     ): mixed {
-        if ($query instanceof GetUser
-            && $invocationOrder->numberOfInvocations() > 2
-        ) {
-            return new UserDTO(
-                id: $query->userId,
-                emailAddress: 'primary@domain.tld'
-            );
-        }
-
-        return parent::handleQuery($query, $invocationOrder);
+        return match(get_class($query)) {
+            GetUser::class => match($invocationOrder->numberOfInvocations()) {
+                1 => null,
+                default => new UserDTO(
+                    id: $query->userId,
+                    emailAddress: 'primary@domain.tld'
+                )
+            },
+            default => parent::handleQuery($query, $invocationOrder)
+        };
     }
 }

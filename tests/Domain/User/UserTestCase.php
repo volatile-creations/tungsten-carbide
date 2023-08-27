@@ -11,12 +11,14 @@ use App\Message\User\CreateUser;
 use App\Message\User\DetachRole;
 use App\Message\User\DeleteUser;
 use App\Message\User\UpdateEmailAddress;
+use App\Message\User\UpdatePassword;
 use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\User\AttachRoleHandler;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\DetachRoleHandler;
 use App\MessageHandler\User\DeleteUserHandler;
 use App\MessageHandler\User\UpdateEmailAddressHandler;
+use App\MessageHandler\User\UpdatePasswordHandler;
 use App\Tests\Domain\CreatesUuid;
 use App\Tests\Domain\HandlesMessages;
 use EventSauce\EventSourcing\AggregateRootId;
@@ -77,6 +79,12 @@ abstract class UserTestCase extends AggregateRootTestCase
         ];
         yield DeleteUser::class => [
             new DeleteUserHandler($this->repository)
+        ];
+        yield UpdatePassword::class => [
+            new UpdatePasswordHandler(
+                userRepository: $this->repository,
+                queryBus: $queryBus
+            )
         ];
     }
 
