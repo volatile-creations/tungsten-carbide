@@ -20,6 +20,9 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Setup Symfony CLI
+        run: curl -sS https://get.symfony.com/cli/installer | bash
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
