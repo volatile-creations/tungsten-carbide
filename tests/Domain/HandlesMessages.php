@@ -11,8 +11,6 @@ use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
 
 trait HandlesMessages
 {
-    private MessageBusInterface $messageBus;
-
     abstract protected function getMessageHandlers(): iterable;
 
     protected function getMessageHandlersLocator(): HandlersLocator
@@ -43,18 +41,12 @@ trait HandlesMessages
         );
     }
 
-    protected function getMessageBus(): MessageBusInterface
-    {
-        return $this->messageBus ??= $this->createMessageBus();
-    }
-
     protected function handle(...$arguments): void
     {
+        $messageBus = $this->createMessageBus();
         array_walk(
             $arguments,
-            fn (object $message) => $this
-                ->getMessageBus()
-                ->dispatch($message)
+            static fn (object $message) => $messageBus->dispatch($message)
         );
     }
 }
