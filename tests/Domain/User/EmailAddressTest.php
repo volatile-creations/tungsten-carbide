@@ -6,6 +6,7 @@ namespace App\Tests\Domain\User;
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\User;
 use App\Domain\User\UserWasCreated;
+use App\Domain\User\UserWasDeleted;
 use App\Message\User\UpdateEmailAddress;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -76,6 +77,22 @@ final class EmailAddressTest extends UserTestCase
                     newEmailAddress: 'user@domain.tld',
                     oldEmailAddress: ''
                 )
+            )
+            ->when(
+                new UpdateEmailAddress(
+                    $this->aggregateRootId(),
+                    'user@domain.tld'
+                )
+            )
+            ->thenNothingShouldHaveHappened();
+    }
+
+    public function testUpdateEmailAddressOnDeletedUser(): void
+    {
+        $this
+            ->given(
+                new UserWasCreated(),
+                new UserWasDeleted()
             )
             ->when(
                 new UpdateEmailAddress(

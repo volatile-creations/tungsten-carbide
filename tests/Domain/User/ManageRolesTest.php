@@ -8,6 +8,7 @@ use App\Domain\User\RoleWasAttached;
 use App\Domain\User\RoleWasDetached;
 use App\Domain\User\User;
 use App\Domain\User\UserWasCreated;
+use App\Domain\User\UserWasDeleted;
 use App\Message\User\AttachRole;
 use App\Message\User\DetachRole;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -110,5 +111,32 @@ final class ManageRolesTest extends UserTestCase
             ->then(
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE])
             );
+    }
+
+    public function testAttachRoleOnDeletedUser(): void
+    {
+        $this
+            ->given(
+                new UserWasCreated(),
+                new UserWasDeleted()
+            )
+            ->when(
+                new AttachRole($this->aggregateRootId(), Role::ADMINISTRATOR)
+            )
+            ->thenNothingShouldHaveHappened();
+    }
+
+    public function testDetachRoleOnDeletedUser(): void
+    {
+        $this
+            ->given(
+                new UserWasCreated(),
+                new RoleWasAttached(Role::ADMINISTRATOR, []),
+                new UserWasDeleted()
+            )
+            ->when(
+                new DetachRole($this->aggregateRootId(), Role::ADMINISTRATOR)
+            )
+            ->thenNothingShouldHaveHappened();
     }
 }
