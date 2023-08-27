@@ -10,7 +10,6 @@ use App\Message\User\GetUser;
 use App\Message\User\GetUserList;
 use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\QueryHandlerInterface;
-use RuntimeException;
 
 final readonly class GetUserHandler implements QueryHandlerInterface
 {
@@ -18,26 +17,20 @@ final readonly class GetUserHandler implements QueryHandlerInterface
     {
     }
 
-    public function __invoke(GetUser $query): User
+    public function __invoke(GetUser $query): ?User
     {
         /** @var UserList $userList */
         $userList = $this->queryBusy->ask(new GetUserList());
-        $matches = array_filter(
+        return array_reduce(
             $userList->results,
-            static fn (User $candidate) => (
-                $candidate->id->toString() === $query->userId->toString()
+            static fn (?User $carry, User $candidate) => (
+                $carry
+                ?? (
+                    $candidate->id->toString() === $query->userId->toString()
+                        ? $candidate
+                        : null
+                )
             )
         );
-
-        if (count($matches) !== 1) {
-            throw new RuntimeException(
-                sprintf(
-                    'Unable to find user with ID "%s"',
-                    $query->userId->toString()
-                )
-            );
-        }
-
-        return reset($matches);
     }
 }

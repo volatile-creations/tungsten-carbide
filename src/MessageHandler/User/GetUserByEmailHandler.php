@@ -34,6 +34,6 @@ final readonly class GetUserByEmailHandler implements QueryHandlerInterface
         );
 
         $users = $userList->results;
-        return reset($users);
+        return array_shift($users);
     }
 }
