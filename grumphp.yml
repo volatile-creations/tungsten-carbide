@@ -47,3 +47,7 @@ grumphp:
         no_exit_statements: ~
       metadata:
         label: PHP parser
+
+    securitychecker_symfony:
+      metadata:
+        label: Symfony security checker
