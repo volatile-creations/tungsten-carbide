@@ -15,13 +15,66 @@ final class CreateUserTest extends UserTestCase
 {
     public function testCreateUser(): void
     {
-        $userId = $this->aggregateRootId();
         $this
-            ->when(new CreateUser($userId, 'test@domain.tld'))
+            ->when(
+                new CreateUser(
+                    userId: $this->aggregateRootId(),
+                    emailAddress: 'test@domain.tld'
+                )
+            )
             ->then(
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
                 new UserWasCreated(),
-                new EmailAddressWasUpdated('test@domain.tld', '')
+                new EmailAddressWasUpdated(
+                    newEmailAddress: 'test@domain.tld',
+                    oldEmailAddress: ''
+                )
+            );
+    }
+
+    public function testCreateUserIsIdempotentWithSameEmailAddress(): void
+    {
+        $this
+            ->when(
+                new CreateUser(
+                    userId: $this->aggregateRootId(),
+                    emailAddress: 'test@domain.tld'
+                ),
+                new CreateUser(
+                    userId: $this->aggregateRootId(),
+                    emailAddress: 'test@domain.tld'
+                )
+            )
+            ->then(
+                new RoleWasAttached(User::DEFAULT_ROLE, []),
+                new UserWasCreated(),
+                new EmailAddressWasUpdated(
+                    newEmailAddress: 'test@domain.tld',
+                    oldEmailAddress: ''
+                )
+            );
+    }
+
+    public function testCreateUserIsIdempotentWithDifferingEmailAddress(): void
+    {
+        $this
+            ->when(
+                new CreateUser(
+                    userId: $this->aggregateRootId(),
+                    emailAddress: 'primary@domain.tld'
+                ),
+                new CreateUser(
+                    userId: $this->aggregateRootId(),
+                    emailAddress: 'secondary@domain.tld'
+                )
+            )
+            ->then(
+                new RoleWasAttached(User::DEFAULT_ROLE, []),
+                new UserWasCreated(),
+                new EmailAddressWasUpdated(
+                    newEmailAddress: 'primary@domain.tld',
+                    oldEmailAddress: ''
+                )
             );
     }
 }

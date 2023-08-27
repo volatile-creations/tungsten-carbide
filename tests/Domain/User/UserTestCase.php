@@ -53,13 +53,18 @@ abstract class UserTestCase extends AggregateRootTestCase
 
     protected function getMessageHandlers(): iterable
     {
+        $queryBus = $this->createQueryBus();
+
         yield CreateUser::class => [
-            new CreateUserHandler($this->repository)
+            new CreateUserHandler(
+                userRepository: $this->repository,
+                queryBus: $queryBus
+            )
         ];
         yield UpdateEmailAddress::class => [
             new UpdateEmailAddressHandler(
                 userRepository: $this->repository,
-                queryBus: $this->createQueryBus()
+                queryBus: $queryBus
             )
         ];
         yield AttachRole::class => [
