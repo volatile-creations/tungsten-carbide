@@ -22,7 +22,7 @@ grumphp:
       x_include: true
       dtd_validation: true
       scheme_validation: true
-      triggered_by: [xml]
+      triggered_by: [xml, xml.dist]
       ignore_patterns: []
       metadata:
         label: XML lint
