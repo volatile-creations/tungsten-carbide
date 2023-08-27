@@ -5,7 +5,7 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\EmailAddressWasRejected;
 use App\Domain\User\User;
-use App\Domain\User\UserWasEnabled;
+use App\Domain\User\UserWasCreated;
 use App\DTO\User\User as UserDTO;
 use App\Message\QueryInterface;
 use App\Message\User\CreateUser;
@@ -25,7 +25,7 @@ final class DuplicateEmailAddressTest extends UserTestCase
 
         $this
             ->on($userId)
-            ->stage(new UserWasEnabled())
+            ->stage(new UserWasCreated())
             ->when(
                 new UpdateEmailAddress(
                     userId: $userId,
@@ -45,7 +45,7 @@ final class DuplicateEmailAddressTest extends UserTestCase
 
         $this
             ->on($userId)
-            ->stage(new UserWasEnabled())
+            ->stage(new UserWasCreated())
             ->when(
                 new CreateUser(
                     userId: $userId,

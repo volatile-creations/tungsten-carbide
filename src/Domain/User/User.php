@@ -18,17 +18,12 @@ final class User implements AggregateRoot
     public static function create(UserId $id): self
     {
         $user = new self($id);
-        $user->enable();
+        $user->recordThat(new UserWasCreated());
         $user->attachRole(self::DEFAULT_ROLE);
         return $user;
     }
 
-    public function enable(): void
-    {
-        $this->recordThat(new UserWasEnabled());
-    }
-
-    public function applyUserWasEnabled(): void
+    public function applyUserWasCreated(): void
     {
         $this->active = true;
     }
@@ -113,14 +108,14 @@ final class User implements AggregateRoot
         // no-op.
     }
 
-    public function disable(): void
+    public function delete(): void
     {
         if ($this->active) {
-            $this->recordThat(new UserWasDisabled());
+            $this->recordThat(new UserWasDeleted());
         }
     }
 
-    public function applyUserWasDisabled(): void
+    public function applyUserWasDeleted(): void
     {
         $this->active = false;
     }

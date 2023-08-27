@@ -5,8 +5,8 @@ namespace App\MessageConsumer\User;
 
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\UserId;
-use App\Domain\User\UserWasDisabled;
-use App\Domain\User\UserWasEnabled;
+use App\Domain\User\UserWasDeleted;
+use App\Domain\User\UserWasCreated;
 use App\DTO\User\User;
 use App\DTO\User\UserList;
 use App\Message\User\GetUserList;
@@ -17,9 +17,12 @@ use App\MessageConsumer\HandlesMessages;
 use ArrayObject;
 use EventSauce\EventSourcing\EventConsumption\EventConsumer;
 use EventSauce\EventSourcing\Message;
+use EventSauce\EventSourcing\ReplayingMessages\TriggerAfterReplay;
 use EventSauce\EventSourcing\ReplayingMessages\TriggerBeforeReplay;
 
-final class UserListProjector extends EventConsumer implements TriggerBeforeReplay
+final class UserListProjector extends EventConsumer implements
+    TriggerBeforeReplay,
+    TriggerAfterReplay
 {
     use HandlesMessages;
 
@@ -67,9 +70,9 @@ final class UserListProjector extends EventConsumer implements TriggerBeforeRepl
         );
     }
 
-    public function handleUserWasEnabled(
-        UserWasEnabled $event,
-        Message $message
+    public function handleUserWasCreated(
+        UserWasCreated $event,
+        Message        $message
     ): void {
         $userId = $message->aggregateRootId()->toString();
         $this->getUsers()->offsetSet(
@@ -82,9 +85,9 @@ final class UserListProjector extends EventConsumer implements TriggerBeforeRepl
         $this->storeUsers();
     }
 
-    public function handleUserWasDisabled(
-        UserWasDisabled $event,
-        Message $message
+    public function handleUserWasDeleted(
+        UserWasDeleted $event,
+        Message        $message
     ): void {
         $this->getUsers()->offsetUnset(
             $message->aggregateRootId()->toString()
@@ -118,5 +121,10 @@ final class UserListProjector extends EventConsumer implements TriggerBeforeRepl
     public function beforeReplay(): void
     {
         $this->users = new ArrayObject();
+    }
+
+    public function afterReplay(): void
+    {
+        $this->storeUsers();
     }
 }

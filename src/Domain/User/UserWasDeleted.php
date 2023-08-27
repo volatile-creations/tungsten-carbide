@@ -6,7 +6,6 @@ namespace App\Domain\User;
 use App\Domain\SerializesPayload;
 use EventSauce\EventSourcing\Serialization\SerializablePayload;
 
-final readonly class UserWasDisabled implements SerializablePayload
+final readonly class UserWasDeleted
 {
-    use SerializesPayload;
 }

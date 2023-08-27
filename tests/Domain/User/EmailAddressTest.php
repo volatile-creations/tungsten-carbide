@@ -5,7 +5,7 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\User;
-use App\Domain\User\UserWasEnabled;
+use App\Domain\User\UserWasCreated;
 use App\Message\User\UpdateEmailAddress;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -15,7 +15,7 @@ final class EmailAddressTest extends UserTestCase
     public function testUpdateValidEmailAddress(): void
     {
         $this
-            ->given(new UserWasEnabled())
+            ->given(new UserWasCreated())
             ->when(
                 new UpdateEmailAddress(
                     $this->aggregateRootId(),
@@ -33,7 +33,7 @@ final class EmailAddressTest extends UserTestCase
     public function testUpdateInvalidEmailAddress(): void
     {
         $this
-            ->given(new UserWasEnabled())
+            ->given(new UserWasCreated())
             ->when(
                 new UpdateEmailAddress(
                     $this->aggregateRootId(),
@@ -47,7 +47,7 @@ final class EmailAddressTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'old@domain.tld',
                     oldEmailAddress: ''
@@ -71,7 +71,7 @@ final class EmailAddressTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'user@domain.tld',
                     oldEmailAddress: ''

@@ -6,7 +6,7 @@ namespace App\Message\User;
 use App\Domain\User\UserId;
 use App\Message\CommandInterface;
 
-final readonly class DisableUser implements CommandInterface
+final readonly class DeleteUser implements CommandInterface
 {
     public function __construct(public UserId $userId)
     {

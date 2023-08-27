@@ -3,6 +3,6 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
-final class UserWasEnabled
+final readonly class UserWasCreated
 {
 }

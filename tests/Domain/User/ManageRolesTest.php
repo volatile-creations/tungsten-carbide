@@ -7,7 +7,7 @@ use App\Domain\User\Role;
 use App\Domain\User\RoleWasAttached;
 use App\Domain\User\RoleWasDetached;
 use App\Domain\User\User;
-use App\Domain\User\UserWasEnabled;
+use App\Domain\User\UserWasCreated;
 use App\Message\User\AttachRole;
 use App\Message\User\DetachRole;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,7 +19,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(User::DEFAULT_ROLE, [])
             )
             ->when(
@@ -40,7 +40,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(Role::USER, [])
             )
             ->when(
@@ -53,7 +53,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(User::DEFAULT_ROLE, [])
             )
             ->when(
@@ -66,7 +66,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE])
             )
@@ -85,7 +85,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(User::DEFAULT_ROLE, [])
             )
             ->when(
@@ -98,7 +98,7 @@ final class ManageRolesTest extends UserTestCase
     {
         $this
             ->given(
-                new UserWasEnabled(),
+                new UserWasCreated(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE]),
                 new RoleWasDetached(
