@@ -11,23 +11,34 @@ final class User implements AggregateRoot
 
     use AggregateRootBehaviour;
 
+    private bool $active = false;
     private string $emailAddress = '';
     private array $roles = [];
 
     public static function create(UserId $id): self
     {
         $user = new self($id);
-        $user->recordThat(new UserWasCreated());
+        $user->enable();
+        $user->attachRole(self::DEFAULT_ROLE);
         return $user;
     }
 
-    public function applyUserWasCreated(): void
+    public function enable(): void
     {
-        $this->attachRole(self::DEFAULT_ROLE);
+        $this->recordThat(new UserWasEnabled());
+    }
+
+    public function applyUserWasEnabled(): void
+    {
+        $this->active = true;
     }
 
     public function attachRole(Role $role): void
     {
+        if (!$this->active) {
+            return;
+        }
+
         if (!in_array($role, $this->roles, true)) {
             $this->recordThat(new RoleWasAttached($role, $this->roles));
         }
@@ -40,6 +51,10 @@ final class User implements AggregateRoot
 
     public function detachRole(Role $role): void
     {
+        if (!$this->active) {
+            return;
+        }
+
         if (
             $role !== self::DEFAULT_ROLE
             && in_array($role, $this->roles, true)
@@ -58,6 +73,10 @@ final class User implements AggregateRoot
 
     public function updateEmailAddress(string $emailAddress): void
     {
+        if (!$this->active) {
+            return;
+        }
+
         if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
             return;
         }
@@ -80,6 +99,10 @@ final class User implements AggregateRoot
 
     public function rejectEmailAddress(string $emailAddress): void
     {
+        if (!$this->active) {
+            return;
+        }
+
         $this->recordThat(
             new EmailAddressWasRejected($emailAddress)
         );
@@ -88,5 +111,17 @@ final class User implements AggregateRoot
     public function applyEmailAddressWasRejected(): void
     {
         // no-op.
+    }
+
+    public function disable(): void
+    {
+        if ($this->active) {
+            $this->recordThat(new UserWasDisabled());
+        }
+    }
+
+    public function applyUserWasDisabled(): void
+    {
+        $this->active = false;
     }
 }

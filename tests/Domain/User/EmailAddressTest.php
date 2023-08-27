@@ -5,6 +5,7 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\User;
+use App\Domain\User\UserWasEnabled;
 use App\Message\User\UpdateEmailAddress;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -13,10 +14,13 @@ final class EmailAddressTest extends UserTestCase
 {
     public function testUpdateValidEmailAddress(): void
     {
-        $userId = $this->aggregateRootId();
         $this
+            ->given(new UserWasEnabled())
             ->when(
-                new UpdateEmailAddress($userId, 'test@domain.tld')
+                new UpdateEmailAddress(
+                    $this->aggregateRootId(),
+                    'test@domain.tld'
+                )
             )
             ->then(
                 new EmailAddressWasUpdated(
@@ -28,26 +32,32 @@ final class EmailAddressTest extends UserTestCase
 
     public function testUpdateInvalidEmailAddress(): void
     {
-        $userId = $this->aggregateRootId();
         $this
+            ->given(new UserWasEnabled())
             ->when(
-                new UpdateEmailAddress($userId, 'foo')
+                new UpdateEmailAddress(
+                    $this->aggregateRootId(),
+                    'foo'
+                )
             )
             ->thenNothingShouldHaveHappened();
     }
 
     public function testUpdatePreexistingEmailAddress(): void
     {
-        $userId = $this->aggregateRootId();
         $this
             ->given(
+                new UserWasEnabled(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'old@domain.tld',
                     oldEmailAddress: ''
                 )
             )
             ->when(
-                new UpdateEmailAddress($userId, 'new@domain.tld')
+                new UpdateEmailAddress(
+                    $this->aggregateRootId(),
+                    'new@domain.tld'
+                )
             )
             ->then(
                 new EmailAddressWasUpdated(
@@ -59,16 +69,19 @@ final class EmailAddressTest extends UserTestCase
 
     public function testUpdateTheSameEmailAddress(): void
     {
-        $userId = $this->aggregateRootId();
         $this
             ->given(
+                new UserWasEnabled(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'user@domain.tld',
                     oldEmailAddress: ''
                 )
             )
             ->when(
-                new UpdateEmailAddress($userId, 'user@domain.tld')
+                new UpdateEmailAddress(
+                    $this->aggregateRootId(),
+                    'user@domain.tld'
+                )
             )
             ->thenNothingShouldHaveHappened();
     }

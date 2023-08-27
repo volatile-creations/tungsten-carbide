@@ -5,6 +5,7 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\EmailAddressWasRejected;
 use App\Domain\User\User;
+use App\Domain\User\UserWasEnabled;
 use App\DTO\User\User as UserDTO;
 use App\Message\QueryInterface;
 use App\Message\User\CreateUser;
@@ -20,10 +21,14 @@ final class DuplicateEmailAddressTest extends UserTestCase
 
     public function testUpdateExistingUserWithTakenEmailAddress(): void
     {
+        $userId = $this->newAggregateRootId();
+
         $this
+            ->on($userId)
+            ->stage(new UserWasEnabled())
             ->when(
                 new UpdateEmailAddress(
-                    userId: $this->newAggregateRootId(),
+                    userId: $userId,
                     emailAddress: self::DUPLICATE_EMAIL_ADDRESS
                 )
             )
@@ -36,10 +41,14 @@ final class DuplicateEmailAddressTest extends UserTestCase
 
     public function testCreateNewUserWithTakenEmailAddress(): void
     {
+        $userId = $this->newAggregateRootId();
+
         $this
+            ->on($userId)
+            ->stage(new UserWasEnabled())
             ->when(
                 new CreateUser(
-                    userId: $this->newAggregateRootId(),
+                    userId: $userId,
                     emailAddress: self::DUPLICATE_EMAIL_ADDRESS
                 )
             )

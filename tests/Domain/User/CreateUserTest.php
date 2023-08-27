@@ -6,7 +6,7 @@ namespace App\Tests\Domain\User;
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\RoleWasAttached;
 use App\Domain\User\User;
-use App\Domain\User\UserWasCreated;
+use App\Domain\User\UserWasEnabled;
 use App\DTO\User\User as UserDTO;
 use App\Message\QueryInterface;
 use App\Message\User\CreateUser;
@@ -27,8 +27,8 @@ final class CreateUserTest extends UserTestCase
                 )
             )
             ->then(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
-                new UserWasCreated(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'test@domain.tld',
                     oldEmailAddress: ''
@@ -50,8 +50,8 @@ final class CreateUserTest extends UserTestCase
                 )
             )
             ->then(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
-                new UserWasCreated(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'test@domain.tld',
                     oldEmailAddress: ''
@@ -73,8 +73,8 @@ final class CreateUserTest extends UserTestCase
                 )
             )
             ->then(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
-                new UserWasCreated(),
                 new EmailAddressWasUpdated(
                     newEmailAddress: 'primary@domain.tld',
                     oldEmailAddress: ''

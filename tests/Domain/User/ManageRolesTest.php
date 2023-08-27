@@ -7,6 +7,7 @@ use App\Domain\User\Role;
 use App\Domain\User\RoleWasAttached;
 use App\Domain\User\RoleWasDetached;
 use App\Domain\User\User;
+use App\Domain\User\UserWasEnabled;
 use App\Message\User\AttachRole;
 use App\Message\User\DetachRole;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,40 +17,62 @@ final class ManageRolesTest extends UserTestCase
 {
     public function testAttachNewRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
-            ->given(new RoleWasAttached(User::DEFAULT_ROLE, []))
-            ->when(new AttachRole($userId, Role::ADMINISTRATOR))
-            ->then(new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE]));
+            ->given(
+                new UserWasEnabled(),
+                new RoleWasAttached(User::DEFAULT_ROLE, [])
+            )
+            ->when(
+                new AttachRole(
+                    $this->aggregateRootId(),
+                    Role::ADMINISTRATOR
+                )
+            )
+            ->then(
+                new RoleWasAttached(
+                    Role::ADMINISTRATOR,
+                    [User::DEFAULT_ROLE]
+                )
+            );
     }
 
     public function testAttachExistingRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
-            ->given(new RoleWasAttached(Role::USER, []))
-            ->when(new AttachRole($userId, Role::USER))
+            ->given(
+                new UserWasEnabled(),
+                new RoleWasAttached(Role::USER, [])
+            )
+            ->when(
+                new AttachRole($this->aggregateRootId(), Role::USER)
+            )
             ->thenNothingShouldHaveHappened();
     }
 
     public function testDetachDefaultRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
-            ->given(new RoleWasAttached(User::DEFAULT_ROLE, []))
-            ->when(new DetachRole($userId, User::DEFAULT_ROLE))
+            ->given(
+                new UserWasEnabled(),
+                new RoleWasAttached(User::DEFAULT_ROLE, [])
+            )
+            ->when(
+                new DetachRole($this->aggregateRootId(), User::DEFAULT_ROLE)
+            )
             ->thenNothingShouldHaveHappened();
     }
 
     public function testDetachExistingRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
             ->given(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE])
             )
-            ->when(new DetachRole($userId, Role::ADMINISTRATOR))
+            ->when(
+                new DetachRole($this->aggregateRootId(), Role::ADMINISTRATOR)
+            )
             ->then(
                 new RoleWasDetached(
                     Role::ADMINISTRATOR,
@@ -60,20 +83,22 @@ final class ManageRolesTest extends UserTestCase
 
     public function testDetachMissingRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
             ->given(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, [])
             )
-            ->when(new DetachRole($userId, Role::ADMINISTRATOR))
+            ->when(
+                new DetachRole($this->aggregateRootId(), Role::ADMINISTRATOR)
+            )
             ->thenNothingShouldHaveHappened();
     }
 
     public function testReattachRole(): void
     {
-        $userId = $this->aggregateRootId();
         $this
             ->given(
+                new UserWasEnabled(),
                 new RoleWasAttached(User::DEFAULT_ROLE, []),
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE]),
                 new RoleWasDetached(
@@ -81,7 +106,7 @@ final class ManageRolesTest extends UserTestCase
                     [User::DEFAULT_ROLE, Role::ADMINISTRATOR]
                 )
             )
-            ->when(new AttachRole($userId, Role::ADMINISTRATOR))
+            ->when(new AttachRole($this->aggregateRootId(), Role::ADMINISTRATOR))
             ->then(
                 new RoleWasAttached(Role::ADMINISTRATOR, [User::DEFAULT_ROLE])
             );

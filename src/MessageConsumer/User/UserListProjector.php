@@ -5,7 +5,7 @@ namespace App\MessageConsumer\User;
 
 use App\Domain\User\EmailAddressWasUpdated;
 use App\Domain\User\UserId;
-use App\Domain\User\UserWasCreated;
+use App\Domain\User\UserWasEnabled;
 use App\DTO\User\User;
 use App\DTO\User\UserList;
 use App\Message\User\GetUserList;
@@ -67,8 +67,8 @@ final class UserListProjector extends EventConsumer implements TriggerBeforeRepl
     }
 
     public function handleUserWasCreated(
-        UserWasCreated $event,
-        Message $message
+        UserWasEnabled $event,
+        Message        $message
     ): void {
         $userId = $message->aggregateRootId()->toString();
         $users = $this->getUsers();

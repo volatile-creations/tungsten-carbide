@@ -9,11 +9,13 @@ use App\Message\QueryInterface;
 use App\Message\User\AttachRole;
 use App\Message\User\CreateUser;
 use App\Message\User\DetachRole;
+use App\Message\User\DisableUser;
 use App\Message\User\UpdateEmailAddress;
 use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\User\AttachRoleHandler;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\DetachRoleHandler;
+use App\MessageHandler\User\DisableUserHandler;
 use App\MessageHandler\User\UpdateEmailAddressHandler;
 use App\Tests\Domain\CreatesUuid;
 use App\Tests\Domain\HandlesMessages;
@@ -72,6 +74,9 @@ abstract class UserTestCase extends AggregateRootTestCase
         ];
         yield DetachRole::class => [
             new DetachRoleHandler($this->repository)
+        ];
+        yield DisableUser::class => [
+            new DisableUserHandler($this->repository)
         ];
     }
 
