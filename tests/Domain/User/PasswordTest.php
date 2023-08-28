@@ -8,11 +8,9 @@ use App\Domain\User\PasswordWasUpdated;
 use App\Domain\User\User;
 use App\Domain\User\UserWasCreated;
 use App\Domain\User\UserWasDeleted;
-use App\Message\QueryInterface;
 use App\Message\User\GetPasswordHash;
 use App\Message\User\UpdatePassword;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 #[CoversClass(User::class)]
 final class PasswordTest extends UserTestCase
@@ -88,13 +86,8 @@ final class PasswordTest extends UserTestCase
             ->thenNothingShouldHaveHappened();
     }
 
-    protected function handleQuery(
-        QueryInterface $query,
-        InvocationOrder $invocationOrder
-    ): mixed {
-        return match(get_class($query)) {
-            GetPasswordHash::class => self::getPasswordHash($query->password),
-            default => parent::handleQuery($query, $invocationOrder)
-        };
+    protected function handleGetPasswordHash(GetPasswordHash $query): string
+    {
+        return self::getPasswordHash($query->password);
     }
 }

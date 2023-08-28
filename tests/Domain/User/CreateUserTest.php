@@ -8,11 +8,9 @@ use App\Domain\User\RoleWasAttached;
 use App\Domain\User\User;
 use App\Domain\User\UserWasCreated;
 use App\DTO\User\User as UserDTO;
-use App\Message\QueryInterface;
 use App\Message\User\CreateUser;
 use App\Message\User\GetUser;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 #[CoversClass(User::class)]
 final class CreateUserTest extends UserTestCase
@@ -82,19 +80,16 @@ final class CreateUserTest extends UserTestCase
             );
     }
 
-    protected function handleQuery(
-        QueryInterface $query,
-        InvocationOrder $invocationOrder
-    ): mixed {
-        return match(get_class($query)) {
-            GetUser::class => match($invocationOrder->numberOfInvocations()) {
-                1 => null,
-                default => new UserDTO(
-                    id: $query->userId,
-                    emailAddress: 'primary@domain.tld'
-                )
-            },
-            default => parent::handleQuery($query, $invocationOrder)
+    protected function handleGetUser(
+        GetUser $query,
+        int $numInvocations
+    ): ?UserDTO {
+        return match($numInvocations) {
+            1 => null,
+            default => new UserDTO(
+                id: $query->userId,
+                emailAddress: 'primary@domain.tld'
+            )
         };
     }
 }

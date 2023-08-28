@@ -5,14 +5,12 @@ namespace App\Tests\Domain\User;
 
 use App\Domain\User\User;
 use App\Domain\User\UserId;
-use App\Message\QueryInterface;
 use App\Message\User\AttachRole;
 use App\Message\User\CreateUser;
 use App\Message\User\DetachRole;
 use App\Message\User\DeleteUser;
 use App\Message\User\UpdateEmailAddress;
 use App\Message\User\UpdatePassword;
-use App\MessageBus\QueryBusInterface;
 use App\MessageHandler\User\AttachRoleHandler;
 use App\MessageHandler\User\CreateUserHandler;
 use App\MessageHandler\User\DetachRoleHandler;
@@ -21,39 +19,13 @@ use App\MessageHandler\User\UpdateEmailAddressHandler;
 use App\MessageHandler\User\UpdatePasswordHandler;
 use App\Tests\Domain\CreatesUuid;
 use App\Tests\Domain\HandlesMessages;
+use App\Tests\Domain\HandlesQueries;
 use EventSauce\EventSourcing\AggregateRootId;
 use EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 abstract class UserTestCase extends AggregateRootTestCase
 {
-    use CreatesUuid, HandlesMessages;
-
-    protected function createQueryBus(): QueryBusInterface
-    {
-        $bus = $this->createMock(QueryBusInterface::class);
-
-        $matcher = self::any();
-        $bus
-            ->expects($matcher)
-            ->method('ask')
-            ->with(self::isInstanceOf(QueryInterface::class))
-            ->willReturnCallback(
-                fn (QueryInterface $query) => $this->handleQuery(
-                    $query,
-                    $matcher
-                )
-            );
-
-        return $bus;
-    }
-
-    protected function handleQuery(
-        QueryInterface $query,
-        InvocationOrder $invocationOrder
-    ): mixed {
-        return null;
-    }
+    use CreatesUuid, HandlesMessages, HandlesQueries;
 
     protected function getMessageHandlers(): iterable
     {
