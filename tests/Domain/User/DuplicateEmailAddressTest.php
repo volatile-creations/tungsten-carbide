@@ -37,6 +37,20 @@ final class DuplicateEmailAddressTest extends UserTestCase
             );
     }
 
+    public function testUpdateDisabledUserWithTakenEmailAddress(): void
+    {
+        $userId = $this->newAggregateRootId();
+
+        $this
+            ->when(
+                new UpdateEmailAddress(
+                    userId: $userId,
+                    emailAddress: self::DUPLICATE_EMAIL_ADDRESS
+                )
+            )
+            ->thenNothingShouldHaveHappened();
+    }
+
     public function testCreateNewUserWithTakenEmailAddress(): void
     {
         $userId = $this->newAggregateRootId();
