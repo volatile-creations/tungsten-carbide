@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Schedule;
 
 use App\Schedule\MaintenanceScheduleProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Scheduler\Schedule;
 
-/**
- * @coversDefaultClass \App\Schedule\MaintenanceScheduleProvider
- */
+#[CoversClass(MaintenanceScheduleProvider::class)]
 class MaintenanceScheduleProviderTest extends TestCase
 {
-    /**
-     * @covers ::getSchedule
-     */
     public function testGetSchedule(): void
     {
         $subject = new MaintenanceScheduleProvider();
