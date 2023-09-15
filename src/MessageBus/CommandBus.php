@@ -3,6 +3,7 @@
 namespace App\MessageBus;
 
 use App\Message\CommandInterface;
+use App\Message\SyncCommandInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 final class CommandBus implements CommandBusInterface
@@ -12,8 +13,9 @@ final class CommandBus implements CommandBusInterface
     ) {
     }
 
-    public function dispatch(CommandInterface $command): void
-    {
+    public function dispatch(
+        CommandInterface|SyncCommandInterface $command
+    ): void {
         $this->appCommandBus->dispatch($command);
     }
 }

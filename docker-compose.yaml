@@ -7,13 +7,23 @@ services:
     build:
       context: docker/php/fpm
       args:
-        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql @composer
+        PHP_EXTENSIONS: amqp apcu intl opcache zip pdo_mysql @composer
     user: 1000:1000
     environment:
       COMPOSER_HOME: /.composer
     volumes:
       - .:/var/www/html
       - ./docker/php/composer:/.composer
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app
+    healthcheck:
+      test: rabbitmqctl ping
+      timeout: 20s
+      retries: 10
 
   worker:
     extends:

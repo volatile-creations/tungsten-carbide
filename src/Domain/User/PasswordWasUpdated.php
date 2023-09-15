@@ -5,12 +5,14 @@ namespace App\Domain\User;
 
 use App\Domain\SerializesPayload;
 use EventSauce\EventSourcing\Serialization\SerializablePayload;
+use SensitiveParameter;
 
 final readonly class PasswordWasUpdated implements SerializablePayload
 {
     use SerializesPayload;
 
-    public function __construct(public string $passwordHash)
-    {
+    public function __construct(
+        #[SensitiveParameter] public string $passwordHash
+    ) {
     }
 }

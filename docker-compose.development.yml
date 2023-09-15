@@ -33,11 +33,15 @@ services:
     volumes:
       - ./docker/mysql/data:/var/lib/mysql
 
+  rabbitmq:
+    ports:
+      - 8085:15672
+
   app:
     <<: *depends-on-db
     build:
       args:
-        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug @composer
+        PHP_EXTENSIONS: amqp apcu intl opcache zip pdo_mysql xdebug @composer
         APK_PACKAGES: git symfony-cli
     volumes:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage

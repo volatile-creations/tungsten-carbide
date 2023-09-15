@@ -3,8 +3,11 @@
 namespace App\MessageBus;
 
 use App\Message\CommandInterface;
+use App\Message\SyncCommandInterface;
 
 interface CommandBusInterface
 {
-    public function dispatch(CommandInterface $command): void;
+    public function dispatch(
+        CommandInterface|SyncCommandInterface $command
+    ): void;
 }

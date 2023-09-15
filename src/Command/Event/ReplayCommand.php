@@ -131,14 +131,23 @@ final class ReplayCommand extends Command
             limit: (int)$input->getOption(self::OPTION_BATCH_SIZE)
         );
 
-        $batch = 0;
-
         do {
-            $io->write(sprintf('Batch #%d: ', ++$batch));
+            $io->write(
+                sprintf(
+                    "[%s / %s]\t",
+                    number_format($cursor->offset()),
+                    number_format($cursor->limit())
+                )
+            );
+
             $result = $replayMessages->replayBatch($cursor);
             $cursor = $result->cursor();
+
             $io->writeln(
-                sprintf('Handled %d messages', $result->messagesHandled())
+                sprintf(
+                    'Handled %d messages',
+                    $result->messagesHandled()
+                )
             );
         } while ($result->messagesHandled() > 0);
 

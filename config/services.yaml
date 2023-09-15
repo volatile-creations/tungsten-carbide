@@ -44,7 +44,7 @@ services:
         EventSauce\EventSourcing\MessageConsumer:
             tags:
                 - name: messenger.message_handler
-                  bus: app.command.bus
+                  bus: app.consumer.bus
 
     domain.message_serializer:
         class: EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer
@@ -59,7 +59,7 @@ services:
         abstract: true
         class: EventSauce\EventSourcing\EventSourcedAggregateRootRepository
         arguments:
-            $dispatcher: '@App\MessageDispatcher\MessageBusDispatcher'
+            $dispatcher: '@App\MessageDispatcher\MessengerDispatcher'
 
     domain.user.message_repository:
         parent: domain.message_repository.abstract
@@ -83,6 +83,7 @@ services:
         arguments:
             $array:
                 user_list: '@App\MessageConsumer\User\UserListProjector'
+                security_user: '@App\MessageConsumer\Security\User\UserProjector'
 
     App\Command\Event\ReplayCommand:
         arguments:
