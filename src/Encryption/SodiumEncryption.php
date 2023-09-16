@@ -5,7 +5,7 @@ namespace App\Encryption;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class SodiumEncryption implements Encryption
+final class SodiumEncryption implements Encrypter, Decrypter
 {
     private ?string $encryptionKey = null;
     private ?string $decryptionKey = null;

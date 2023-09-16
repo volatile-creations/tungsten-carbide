@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Security\User;
 
-use App\Encryption\Encryption;
+use App\Message\Encryption\GetDecryptedMessage;
+use App\Message\Encryption\GetEncryptedMessage;
+use App\MessageBus\QueryBusInterface;
 use stdClass;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -16,7 +18,7 @@ final readonly class UserVault implements UserRepository
 
     public function __construct(
         private SerializerInterface $serializer,
-        private Encryption $encryption,
+        private QueryBusInterface $queryBus,
         #[
             Autowire(
                 value: '%kernel.project_dir%/var/projections/security/user/'
@@ -61,10 +63,12 @@ final readonly class UserVault implements UserRepository
         $this->ensureProjectionDirectory();
         file_put_contents(
             filename: $this->getPath($user),
-            data: $this->encryption->encrypt(
-                $this->serializer->serialize(
-                    data: $user,
-                    format: self::SERIALIZER_FORMAT
+            data: $this->queryBus->ask(
+                new GetEncryptedMessage(
+                    $this->serializer->serialize(
+                        data: $user,
+                        format: self::SERIALIZER_FORMAT
+                    )
                 )
             )
         );
@@ -87,7 +91,7 @@ final readonly class UserVault implements UserRepository
         }
 
         $encrypted = file_get_contents($path);
-        $serialized = $this->encryption->decrypt($encrypted);
+        $serialized = $this->queryBus->ask(new GetDecryptedMessage($encrypted));
         $payload = $this->serializer->deserialize(
             data: $serialized,
             type: stdClass::class,
