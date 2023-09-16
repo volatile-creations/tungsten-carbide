@@ -16,7 +16,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: apcu, intl, opcache, zip, pdo_mysql
+          extensions: amqp, apcu, intl, opcache, zip, pdo_mysql
           tools: composer:v2
           coverage: none
 
