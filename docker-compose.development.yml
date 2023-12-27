@@ -48,6 +48,3 @@ services:
 
   worker:
     <<: [*depends-on-db, *is-symfony-cli-consumer]
-
-  scheduler:
-    <<: [*depends-on-db, *is-symfony-cli-consumer]

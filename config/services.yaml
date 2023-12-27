@@ -11,9 +11,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-        bind:
-            EventSauce\EventSourcing\AggregateRootRepository $userRepository: '@domain.user.repository'
-
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -24,68 +21,3 @@ services:
             - '../src/Message/'
             - '../src/Migration/'
             - '../src/Kernel.php'
-
-    _instanceof:
-        App\MessageHandler\QueryHandlerInterface:
-            tags:
-                - name: messenger.message_handler
-                  bus: app.query.bus
-
-        App\MessageHandler\CommandHandlerInterface:
-            tags:
-                - name: messenger.message_handler
-                  bus: app.command.bus
-
-        App\MessageHandler\EventHandlerInterface:
-            tags:
-                - name: messenger.message_handler
-                  bus: app.event.bus
-
-        EventSauce\EventSourcing\MessageConsumer:
-            tags:
-                - name: messenger.message_handler
-                  bus: app.consumer.bus
-
-    domain.message_serializer:
-        class: EventSauce\EventSourcing\Serialization\ConstructingMessageSerializer
-
-    domain.message_repository.abstract:
-        abstract: true
-        class: EventSauce\MessageRepository\DoctrineMessageRepository\DoctrineMessageRepository
-        arguments:
-            $serializer: '@domain.message_serializer'
-
-    domain.aggregate_root_repository.abstract:
-        abstract: true
-        class: EventSauce\EventSourcing\EventSourcedAggregateRootRepository
-        arguments:
-            $dispatcher: '@App\MessageDispatcher\MessengerDispatcher'
-
-    domain.user.message_repository:
-        parent: domain.message_repository.abstract
-        arguments:
-            $tableName: user_events
-
-    domain.user.repository:
-        parent: domain.aggregate_root_repository.abstract
-        arguments:
-            $aggregateRootClassName: App\Domain\User\User
-            $messageRepository: '@domain.user.message_repository'
-
-    domain.message_repository.container:
-        class: ArrayObject
-        arguments:
-            $array:
-                user: '@domain.user.message_repository'
-
-    domain.message_consumer.container:
-        class: ArrayObject
-        arguments:
-            $array:
-                user_list: '@App\MessageConsumer\User\UserListProjector'
-                security_user: '@App\MessageConsumer\Security\User\UserProjector'
-
-    App\Command\Event\ReplayCommand:
-        arguments:
-            $messageRepositories: '@domain.message_repository.container'
-            $messageConsumers: '@domain.message_consumer.container'
