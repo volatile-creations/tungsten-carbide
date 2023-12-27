@@ -35,6 +35,7 @@ grumphp:
 
     phpparser:
       ignore_patterns:
+        - /^importmap.php$/
         - /^vendor\/.+/
         - /^config\/.+/
         - /^public\/.+/
