@@ -38,4 +38,4 @@ jobs:
         run: bin/console tailwind:build --minify
 
       - name: Compile assets
-        run: bin/console asset-map:compile
+        run: bin/console asset-map:compile --env prod
