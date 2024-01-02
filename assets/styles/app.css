@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-    background-color: skyblue;
+    background: url("background.webp") center/100%;
 }

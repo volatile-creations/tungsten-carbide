@@ -1,0 +1,52 @@
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_widget_simple -%}
+    <div class="mt-2">
+        {{- parent() -}}
+    </div>
+{%- endblock form_widget_simple -%}
+
+{%- block form_start -%}
+    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('space-y-10')) }) -%}
+    {{- parent() -}}
+{%- endblock form_start -%}
+
+{%- block widget_attributes -%}
+    {%- set attr = attr|merge({
+        class: attr.class|default(widget_class|default('block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6')) ~ (disabled ? ' ' ~ widget_disabled_class|default('border-gray-300 text-gray-500')) ~ (errors|length ? ' ' ~ widget_errors_class|default('border-red-700'))
+    }) -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({
+        class: label_attr.class|default(label_class|default('block text-sm font-medium leading-6 text-gray-900'))
+    }) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_help -%}
+    {%- set help_attr = help_attr|merge({ class: help_attr.class|default(help_class|default('mt-1 text-gray-600')) }) -%}
+    <div class="mt-6 mb-6">
+        <small>
+            {{- parent() -}}
+        </small>
+    </div>
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="text-sm">
+            {%- for error in errors -%}
+                <li class="{{ error_item_class|default('text-red-700') }}">{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block submit_widget -%}
+    {%- set attr = attr|merge({
+        class: attr.class|default(widget_class|default('flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'))
+    }) -%}
+    {{- parent() -}}
+{%- endblock submit_widget -%}
