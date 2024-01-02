@@ -1,9 +1,11 @@
+title: Inloggen op je account
+
 email:
     label: E-mailadres
 
 password:
-    help: '<a href="{url}">Wachtwoord vergeten?</a>'
     label: Wachtwoord
+    help: '<a href="{url}">Wachtwoord vergeten?</a>'
 
 submit:
-    label: Inloggen
+    label: Log in

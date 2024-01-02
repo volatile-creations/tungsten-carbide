@@ -1,9 +1,11 @@
+title: Sign in to your account
+
 email:
     label: Email address
 
 password:
-    help: '<a href="{url}">Forgot password?</a>'
     label: Password
+    help: '<a href="{url}">Forgot password?</a>'
 
 submit:
     label: Sign in
