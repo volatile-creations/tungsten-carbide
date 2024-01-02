@@ -26,8 +26,7 @@ final class ForgotPasswordFormType extends AbstractType
                     domain: 'reset_password'
                 ),
                 'constraints' => [
-                    new NotBlank(message: 'Please enter your email'),
-                    new EqualTo(value: 'definitely-not@google.com')
+                    new NotBlank(message: 'Please enter your email')
                 ],
                 'help' => new TranslatableMessage(
                     'Enter your email address, and we will send you a link to reset your password.',
