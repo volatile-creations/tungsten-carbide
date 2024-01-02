@@ -22,14 +22,14 @@ final class ForgotPasswordFormType extends AbstractType
             [
                 'attr' => ['autocomplete' => 'email'],
                 'label' => new TranslatableMessage(
-                    'Email address',
+                    'email.label',
                     domain: 'reset_password'
                 ),
                 'constraints' => [
                     new NotBlank(message: 'Please enter your email')
                 ],
                 'help' => new TranslatableMessage(
-                    'Enter your email address, and we will send you a link to reset your password.',
+                'email.help',
                     domain: 'reset_password'
                 )
             ]
@@ -39,7 +39,7 @@ final class ForgotPasswordFormType extends AbstractType
             SubmitType::class,
             [
                 'label' => new TranslatableMessage(
-                    'Send password reset email',
+                'submit.label',
                     domain: 'reset_password'
                 )
             ]

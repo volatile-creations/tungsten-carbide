@@ -1,0 +1,9 @@
+email:
+    label: E-mailadres
+
+password:
+    help: '<a href="{url}">Wachtwoord vergeten?</a>'
+    label: Wachtwoord
+
+submit:
+    label: Inloggen

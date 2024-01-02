@@ -95,7 +95,7 @@ final class LoginFormType extends AbstractType
 
         $resolver->setDefault(
             'username_label',
-            new TranslatableMessage('Email address', domain: 'login')
+            new TranslatableMessage('email.label', domain: 'login')
         );
         $resolver->setAllowedTypes(
             'username_label',
@@ -123,9 +123,9 @@ final class LoginFormType extends AbstractType
         $resolver->setDefault(
             'password_help',
             new TranslatableMessage(
-                message: '<a href="%url%">Forgot password?</a>',
+                message: 'password.help',
                 parameters: [
-                    '%url%' => $this->urlGenerator->generate('forgot_password')
+                    'url' => $this->urlGenerator->generate('forgot_password')
                 ],
                 domain: 'login'
             )
@@ -152,7 +152,7 @@ final class LoginFormType extends AbstractType
 
         $resolver->setDefault(
             'password_label',
-            new TranslatableMessage('Password', domain: 'login')
+            new TranslatableMessage('password.label', domain: 'login')
         );
         $resolver->setAllowedTypes(
             'password_label',
@@ -164,7 +164,7 @@ final class LoginFormType extends AbstractType
 
         $resolver->setDefault(
             'submit_label',
-            new TranslatableMessage('Sign in', domain: 'login')
+            new TranslatableMessage('submit.label', domain: 'login')
         );
         $resolver->setAllowedTypes(
             'submit_label',

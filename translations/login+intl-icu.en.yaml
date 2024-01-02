@@ -1,0 +1,9 @@
+email:
+    label: Email address
+
+password:
+    help: '<a href="{url}">Forgot password?</a>'
+    label: Password
+
+submit:
+    label: Sign in
