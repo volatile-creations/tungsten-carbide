@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
@@ -33,10 +34,16 @@ final class ResetPasswordFormType extends AbstractType
                         new NotCompromisedPassword(),
                         new PasswordStrength()
                     ],
-                    'label' => 'New password',
+                    'label' => new TranslatableMessage(
+                        'new_password.label',
+                        domain: 'reset_password'
+                    ),
                 ],
                 'second_options' => [
-                    'label' => 'Repeat Password',
+                    'label' => new TranslatableMessage(
+                        'repeat_password.label',
+                        domain: 'reset_password'
+                    ),
                 ],
                 'invalid_message' => 'The password fields must match.',
                 // Instead of being set onto the object directly,
@@ -47,7 +54,12 @@ final class ResetPasswordFormType extends AbstractType
         $builder->add(
             'submit',
             SubmitType::class,
-            ['label' => 'Reset password']
+            [
+                'label' => new TranslatableMessage(
+                    'reset.label',
+                    domain: 'reset_password'
+                )
+            ]
         );
     }
 }
