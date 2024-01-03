@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     public array $roles = [];
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Assert\NotBlank(message: 'Please enter a password')]
     #[Assert\NotCompromisedPassword]
     #[Assert\PasswordStrength]
