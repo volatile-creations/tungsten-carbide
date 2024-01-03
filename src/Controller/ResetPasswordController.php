@@ -36,7 +36,8 @@ class ResetPasswordController extends AbstractController
     #[Route('', name: 'forgot_password')]
     public function request(
         Request $request,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        TranslatorInterface $translator
     ): Response {
         $form = $this->createForm(ForgotPasswordFormType::class);
         $form->handleRequest($request);
@@ -44,7 +45,8 @@ class ResetPasswordController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             return $this->processSendingPasswordResetEmail(
                 $form->get('email')->getData(),
-                $mailer
+                $mailer,
+                $translator
             );
         }
 
@@ -148,11 +150,12 @@ class ResetPasswordController extends AbstractController
 
     private function processSendingPasswordResetEmail(
         string $emailFormData,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        TranslatorInterface $translator
     ): RedirectResponse {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy([
-            'email' => $emailFormData,
-        ]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(
+            ['email' => $emailFormData]
+        );
 
         if (!$user) {
             return $this->redirectToRoute('check_password_email');
@@ -164,15 +167,20 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('check_password_email');
         }
 
-        $email = (new TemplatedEmail())
-            ->from(new Address('wedding@tungstencarbide.love', 'Jongerius Wedding'))
-            ->to($user->getEmail())
-            ->subject('Your password reset request')
-            ->htmlTemplate('reset_password/email.html.twig')
-            ->context([
-                'resetToken' => $resetToken,
-            ])
-        ;
+        $email = new TemplatedEmail();
+        $email->from(
+            new Address(
+                'wedding@tungstencarbide.love',
+                'Els & Jan-Marten'
+            )
+        );
+        $email->to($user->getEmail());
+        $email->subject(
+            $translator->trans('mail.subject', domain: 'reset_password')
+        );
+        $email->locale($translator->getLocale());
+        $email->htmlTemplate('reset_password/email.html.twig');
+        $email->context(['resetToken' => $resetToken]);
 
         $mailer->send($email);
 
