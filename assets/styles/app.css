@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-    background: url("background.webp") center/100%;
+    background: url("background.webp") center/100% #afafaf;
 }
