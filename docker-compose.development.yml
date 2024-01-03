@@ -1,11 +1,15 @@
-x-depends-on-db: &depends-on-db
+x-php: &php
   depends_on:
     db:
       condition: service_healthy
+    mail:
+      condition: service_started
   environment:
     DATABASE_URL: "mysql://app:password@db:3306/app?serverVersion=8.0.33&charset=utf8mb4"
+    MAILER_DSN: smtp://null:null@mail:1025
 
-x-symfony-cli-consumer: &is-symfony-cli-consumer
+x-consumer: &consumer
+  <<: *php
   entrypoint: >-
     symfony run --watch=config,src,vendor
       bin/console messenger:consume --memory-limit 96M --time-limit 300
@@ -37,8 +41,15 @@ services:
     ports:
       - 8085:15672
 
+  mail:
+    image: mailhog/mailhog:latest
+    ports:
+      - 2525:8025
+    logging:
+      driver: "none"
+
   app:
-    <<: *depends-on-db
+    <<: *php
     build:
       args:
         PHP_EXTENSIONS: amqp apcu intl opcache zip pdo_mysql xdebug @composer
@@ -47,4 +58,4 @@ services:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
 
   worker:
-    <<: [*depends-on-db, *is-symfony-cli-consumer]
+    <<: *consumer
