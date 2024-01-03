@@ -13,7 +13,7 @@ use Symfony\Component\Translation\LocaleSwitcher;
 final readonly class RequestLocaleListener
 {
     // @todo Solve this with config or detection.
-    private const array ALLOWED_LANGUAGES = ['en', 'nl'];
+    private const array ALLOWED_LOCALES = ['en', 'nl'];
 
     public function __construct(private LocaleSwitcher $localeSwitcher)
     {
@@ -21,9 +21,7 @@ final readonly class RequestLocaleListener
 
     public static function isAllowed(string $locale): bool
     {
-        [$language] = explode('-', $locale . '-', 2);
-
-        return in_array($language, self::ALLOWED_LANGUAGES, true);
+        return in_array($locale, self::ALLOWED_LOCALES, true);
     }
 
     public static function getAcceptLanguages(Request $request): array
