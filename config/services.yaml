@@ -21,3 +21,8 @@ services:
             - '../src/Message/'
             - '../src/Migration/'
             - '../src/Kernel.php'
+
+    Symfony\Component\Mime\Address:
+        arguments:
+            $address: '%env(MAILER_SENDER_EMAIL)%'
+            $name: '%env(MAILER_SENDER_NAME)%'

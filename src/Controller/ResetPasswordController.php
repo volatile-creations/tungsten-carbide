@@ -29,7 +29,8 @@ class ResetPasswordController extends AbstractController
 
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private Address $sender
     ) {
     }
 
@@ -168,12 +169,7 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = new TemplatedEmail();
-        $email->from(
-            new Address(
-                'wedding@tungstencarbide.love',
-                'Els & Jan-Marten'
-            )
-        );
+        $email->from($this->sender);
         $email->to($user->getEmail());
         $email->subject(
             $translator->trans('mail.subject', domain: 'reset_password')
