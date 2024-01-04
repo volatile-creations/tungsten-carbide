@@ -8,15 +8,19 @@ use App\Entity\User;
 use App\Form\ResetPasswordFormType;
 use App\Form\ForgotPasswordFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Endroid\QrCode\Builder\BuilderInterface;
+use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -28,9 +32,10 @@ class ResetPasswordController extends AbstractController
     use ResetPasswordControllerTrait;
 
     public function __construct(
-        private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager,
-        private Address $sender
+        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly Address $sender,
+        private readonly BuilderInterface $svgQrCodeBuilder
     ) {
     }
 
@@ -57,6 +62,37 @@ class ResetPasswordController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    #[Route(
+        '/user/{uuid}.svg',
+        name: 'reset_user_password_qr',
+    )]
+    public function resetUserQrCode(User $user): Response
+    {
+        $builder = clone $this->svgQrCodeBuilder;
+        $builder->data(
+            $this->generateUrl(
+                route: 'reset_user_password',
+                parameters: ['uuid' => $user->id->toRfc4122()],
+                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            )
+        );
+
+        $response = new QrCodeResponse($builder->build());
+        $response->headers->set(
+            'Content-Disposition',
+            $response->headers->makeDisposition(
+                disposition: ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                filename: sprintf(
+                    '%s - %s - password reset.svg',
+                    $user->name,
+                    $user->email
+                )
+            )
+        );
+
+        return $response;
     }
 
     #[Route('/user/{uuid}', name: 'reset_user_password')]
