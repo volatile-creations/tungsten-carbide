@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block language_switcher %}{% endblock %}
+
 {% block body %}
-    <div class="p-10">
+    <div class="p-10 h-full bg-white">
         <h1>{{ app.user.name }}</h1>
     </div>
 {% endblock %}
