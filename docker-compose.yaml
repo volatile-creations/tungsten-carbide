@@ -48,10 +48,5 @@ services:
     depends_on:
       app:
         condition: service_healthy
-    healthcheck:
-      test: wget -O /dev/null -U HEALTHCHECK http://localhost/version
-      timeout: 3s
-      interval: 10s
-      retries: 3
     ports:
       - "${HTTP_PORT}:80"
