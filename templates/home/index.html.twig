@@ -2,6 +2,8 @@
 
 {% block language_switcher %}{% endblock %}
 
+{% block importmap %}{{ importmap('app') }}{% endblock %}
+
 {% block body %}
     <div class="p-10 h-full bg-white">
         <h1>{{ app.user.name }}</h1>
