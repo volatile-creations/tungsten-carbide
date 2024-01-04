@@ -36,7 +36,7 @@ final readonly class RequestLocaleListener
 
                 return [$locale, (float)substr($q, 2)];
             },
-            explode(',', $request->headers->get('accept-language'))
+            explode(',', $request->headers->get('accept-language') ?? '')
         );
 
         usort(
