@@ -138,7 +138,7 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('login');
+            return $this->redirectToRoute('reset_password_success');
         }
 
         return $this->render(
@@ -147,6 +147,12 @@ class ResetPasswordController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    #[Route(path: '/success', name: 'reset_password_success')]
+    public function success(): Response
+    {
+        return $this->render('reset_password/success.html.twig');
     }
 
     private function processSendingPasswordResetEmail(
