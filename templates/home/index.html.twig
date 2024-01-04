@@ -3,12 +3,5 @@
 {% block body %}
     <div class="p-10">
         <h1>{{ app.user.name }}</h1>
-
-        <dl>
-            {% for header, value in app.request.headers.all %}
-                <dt>{{ header }}</dt>
-                <dd><pre>{{ value|json_encode }}</pre></dd>
-            {% endfor %}
-        </dl>
     </div>
 {% endblock %}

@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --background-color: #afafaf;
+    --background-image: url("background.webp");
+}
+
 body {
-    background: url("background.webp") center/100% #afafaf;
+    background:
+        radial-gradient(
+            circle at center,
+            transparent 0,
+            transparent 25%,
+            var(--background-color) 100%
+        ),
+        var(--background-image)
+            center/cover
+            no-repeat
+            scroll
+        var(--background-color);
+}
+
+@media (max-aspect-ratio: 1/1) {
+    body {
+        background:
+            linear-gradient(
+                to bottom,
+                var(--background-color) 25%,
+                transparent 65%,
+                var(--background-color) 100%
+            ),
+            var(--background-image)
+                center/contain
+                no-repeat
+                scroll
+            var(--background-color);
+    }
 }
