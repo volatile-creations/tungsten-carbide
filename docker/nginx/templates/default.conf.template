@@ -7,7 +7,7 @@ server {
 
     location /assets {
         root /var/www/html/public;
-        try_files $uri =404;
+        try_files $uri public/index.php$is_args$args;
         allow all;
     }
 
