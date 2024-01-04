@@ -5,6 +5,12 @@ upstream fastcgi_backend {
 server {
     listen 80;
 
+    location /assets {
+        root /var/www/html/public;
+        try_files $uri =404;
+        allow all;
+    }
+
     location / {
         index index.php;
         try_files public/$uri public/index.php$is_args$args;

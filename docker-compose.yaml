@@ -48,6 +48,7 @@ services:
     image: nginx:alpine
     volumes:
       - ./docker/nginx/templates:/etc/nginx/templates:ro
+      - ./public:/var/www/html/public:ro
     depends_on:
       app:
         condition: service_healthy
