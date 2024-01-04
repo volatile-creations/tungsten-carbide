@@ -59,6 +59,19 @@ class ResetPasswordController extends AbstractController
         );
     }
 
+    #[Route('/user/{uuid}', name: 'reset_user_password')]
+    public function resetUser(
+        User $user,
+        MailerInterface $mailer,
+        TranslatorInterface $translator
+    ): Response {
+        return $this->processSendingPasswordResetEmail(
+            emailFormData: $user->getEmail(),
+            mailer: $mailer,
+            translator: $translator
+        );
+    }
+
     #[Route('/check-email', name: 'check_password_email')]
     public function checkEmail(): Response
     {
