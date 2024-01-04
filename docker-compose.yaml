@@ -35,6 +35,9 @@ services:
         --memory-limit 96M
         --time-limit 300
     command: async
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: ps ax | grep -q messenger:consume
       retries: 5
