@@ -15,35 +15,6 @@ services:
       - .:/var/www/html
       - ./docker/php/composer:/.composer
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    environment:
-      RABBITMQ_DEFAULT_USER: app
-      RABBITMQ_DEFAULT_PASS: app
-    healthcheck:
-      test: rabbitmqctl ping
-      timeout: 20s
-      retries: 10
-
-  worker:
-    extends:
-      service: app
-    build:
-      context: docker/php/cli
-    entrypoint: >-
-      php bin/console messenger:consume 
-        --memory-limit 96M
-        --time-limit 300
-    command: async
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ps ax | grep -q messenger:consume
-      retries: 5
-      interval: 30s
-      timeout: 5s
-
   web:
     image: nginx:alpine
     volumes:
@@ -51,6 +22,6 @@ services:
       - ./public:/var/www/html/public:ro
     depends_on:
       app:
-        condition: service_healthy
+        condition: service_started
     ports:
       - "${HTTP_PORT}:80"
