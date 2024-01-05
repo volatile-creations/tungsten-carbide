@@ -7,7 +7,7 @@ services:
     build:
       context: docker/php/fpm
       args:
-        PHP_EXTENSIONS: amqp apcu intl opcache zip pdo_mysql @composer
+        PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql @composer
     user: 1000:1000
     environment:
       COMPOSER_HOME: /.composer
