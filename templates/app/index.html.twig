@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block language_switcher %}{% endblock %}
-
-{% block importmap %}{{ importmap('app') }}{% endblock %}
+{% block title %}{{ app.user.name }}{% endblock %}
 
 {% block body %}
     <div class="p-10 h-full bg-white">

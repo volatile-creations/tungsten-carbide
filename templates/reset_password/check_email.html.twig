@@ -1,34 +1,27 @@
-{% extends 'base.html.twig' %}
+{% extends 'auth.base.html.twig' %}
 
 {% trans_default_domain 'reset_password' %}
-{% block title %}{{ 'check_email.title'|trans }}{% endblock %}
+{% block title %}{% trans %}check_email.title{% endtrans %}{% endblock %}
 
-{% block body %}
-    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-        <div class="sm:mx-auto sm:w-full sm:max-w-sm bg-white p-6 rounded">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto h-16 w-auto text-indigo-600">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                </svg>
-                <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">{{ 'check_email.title'|trans }}</h2>
-            </div>
+{% block card_icon_path %}
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+{% endblock %}
 
-            <div class="mt-10 space-y-6">
-                <p>
-                    {{ 'check_email.confirmation'|trans }}
-                    {{ 'check_email.expiration'|trans({
-                        'expiration': resetToken.expirationMessageKey|trans(
-                            resetToken.expirationMessageData,
-                            'ResetPasswordBundle'
-                        )
-                    }) }}
-                </p>
-                <p>
-                    {{ 'check_email.check_spam_or_retry'|trans({
-                        'url': path('forgot_password')
-                    })|raw }}
-                </p>
-            </div>
-        </div>
+{% block card_body %}
+    <div class="space-y-6">
+        <p>
+            {% trans %}check_email.confirmation{% endtrans %}
+            {% trans with {
+                'expiration': resetToken.expirationMessageKey|trans(
+                    resetToken.expirationMessageData,
+                    'ResetPasswordBundle'
+                )
+            } %}check_email.expiration{% endtrans %}
+        </p>
+        <p>
+            {% trans with {'url': path('forgot_password')} %}
+                check_email.check_spam_or_retry
+            {% endtrans %}
+        </p>
     </div>
 {% endblock %}

@@ -1,17 +1,17 @@
 {% trans_default_domain 'reset_password' %}
-<h1>{{ 'mail.title'|trans }}</h1>
+<h1>{% trans %}mail.title{% endtrans %}</h1>
 
-<p>{{ 'mail.instruction'|trans }}</p>
+<p>{% trans %}mail.instruction{% endtrans %}</p>
 
 <a href="{{ url('reset_password', {token: resetToken.token}) }}">{{ url('reset_password', {token: resetToken.token}) }}</a>
 
 <p>
-    {{ 'mail.expiration'|trans({
+    {% trans with {
         'expiration': resetToken.expirationMessageKey|trans(
             resetToken.expirationMessageData,
             'ResetPasswordBundle'
         )
-    }) }}
+    } %}mail.expiration{% endtrans %}
 </p>
 
-<p>{{ 'mail.sign_off'|trans }}</p>
+<p>{% trans %}mail.sign_off{% endtrans %}</p>
