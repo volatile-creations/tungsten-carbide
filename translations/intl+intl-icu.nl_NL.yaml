@@ -1,0 +1,10 @@
+locale:
+    en_US:
+        short: Engels
+        long: Engels VS
+        description: Gebruik de website in het amerikaans engels.
+
+    nl_NL:
+        short: Nederlands
+        long: Nederlands
+        description: Gebruik de website in het nederlands.
