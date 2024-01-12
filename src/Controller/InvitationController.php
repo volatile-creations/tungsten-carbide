@@ -7,11 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class AppController extends AbstractController
+final class InvitationController extends AbstractController
 {
-    #[Route(path: '/', name: 'app')]
+    #[Route(path: '/', name: 'invitation')]
     public function __invoke(): Response
     {
-        return $this->render('app/index.html.twig');
+        return $this->render('app/invitation/index.html.twig');
     }
 }

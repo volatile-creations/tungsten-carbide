@@ -7,7 +7,7 @@
     --background-image: url("background.webp");
 }
 
-body {
+.bg-rings {
     background:
         radial-gradient(
             circle at center,
@@ -23,7 +23,7 @@ body {
 }
 
 @media (max-aspect-ratio: 1/1) {
-    body {
+    .bg-rings {
         background:
             linear-gradient(
                 to bottom,

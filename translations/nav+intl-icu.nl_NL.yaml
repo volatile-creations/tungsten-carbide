@@ -1,0 +1,6 @@
+routes:
+    invitation:
+        label: Uitnodiging
+
+    _logout_main:
+        label: Uitloggen

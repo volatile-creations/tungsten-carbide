@@ -1,0 +1,6 @@
+routes:
+    invitation:
+        label: Invitation
+
+    _logout_main:
+        label: Sign out

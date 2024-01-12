@@ -1,5 +1,13 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        app_nav_items:
+            - route: invitation
+        account_nav_items:
+            - route: _logout_main
+
+        wedding_date: '2024-06-08 14:00'
+        event_date: '2024-06-07 19:00'
 
 when@test:
     twig:
