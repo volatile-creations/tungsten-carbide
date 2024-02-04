@@ -34,7 +34,6 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private readonly ResetPasswordHelperInterface $resetPasswordHelper,
         private readonly EntityManagerInterface $entityManager,
-        private readonly Address $sender,
         private readonly BuilderInterface $svgQrCodeBuilder
     ) {
     }
@@ -224,8 +223,7 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = new TemplatedEmail();
-        $email->from($this->sender);
-        $email->to($user->getEmail());
+        $email->to($user->getAddress());
         $email->subject(
             $translator->trans('mail.subject', domain: 'reset_password')
         );
