@@ -7,3 +7,37 @@ invitation:
     rsvps: Bevestigde gasten
     ceremony: Ceremonie
     address: Locatie
+    introduction: >-
+        Hey {name}! We hopen dat jij {partySize, select,
+            0 {ons gaat}
+            other {en je gezelschap ons gaan}
+        } vergezellen op onze bruiloft!
+    attendance:
+        title: Aanwezigheid
+        introduction: >-
+            Laat ons weten welke delen van de bruiloft je bij wil wonen.
+            Anders dan gebruikelijk, hebben we de uitnodiging opgesplitst, zodat
+            ieder voor zich kan bepalen hoeveel van de bruiloft je bijwoont.
+
+pre-party:
+    title: Nacht van vermaak
+    description: >-
+        Leer elkaar kennen en maak jezelf thuis.
+        Je blijft slapen en zit de ochtend van de bruiloft bij ons aan de
+        ontbijttafel.
+
+lunch:
+    title: Lunch voor de bruiloft
+    description: Samen lunchen voor de ceremonie.
+
+ceremony:
+    title: Trouwceremonie
+    description: Els & Jan-Marten gaan trouwen
+
+party:
+    title: Feest en gekkigheid
+    description: Eten, drinken, entertainment. Waar we voor kwamen,
+
+after-party:
+    title: De volgende dag
+    description: Opstaan, ontbijt en schoonmaken.

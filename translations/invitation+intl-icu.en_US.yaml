@@ -1,4 +1,5 @@
 title: You are invited to our wedding!
+
 invitation:
     subtitle: Invitation
     title: You are invited to the wedding of Els & Jan-Marten
@@ -6,3 +7,36 @@ invitation:
     rsvps: Confirmed guests
     ceremony: Ceremony
     address: Location
+    introduction: >-
+        Hey {name}! We sincerely hope to have you {partySize, select,
+            0 {}
+            other {and your party}
+        } join us for our wedding!
+    attendance:
+        title: Attendance
+        introduction: >-
+            Please let us know what parts of our wedding you would like to attend.
+            Unlike other invitations, we split up the event such that everyone
+            can choose for themselves what parts of the wedding they want to attend.
+
+pre-party:
+    title: Entertainment night
+    description: >-
+        Getting to know each other and settling in.
+        You stay the night and share breakfast with us on the day of the wedding.
+
+lunch:
+    title: Pre-wedding lunch
+    description: Lunch just before the wedding ceremony.
+
+ceremony:
+    title: Wedding ceremony
+    description: Els & Jan-Marten will be wed
+
+party:
+    title: Party and shenanigans
+    description: Drinks, entertainment, food, the good stuff.
+
+after-party:
+    title: The day after
+    description: Waking up, breakfast, cleaning up

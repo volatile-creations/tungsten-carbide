@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Mime\Address;
@@ -20,11 +22,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME)]
     public ?Uuid $id = null;
 
-    #[ORM\Column]
-    #[Assert\NoSuspiciousCharacters]
-    #[Assert\NotBlank]
-    public ?string $name = null;
-
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]
     public ?string $email = null;
@@ -38,6 +35,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\PasswordStrength]
     public ?string $password = null;
 
+    #[ORM\OneToMany(mappedBy: 'manager', targetEntity: Guest::class, cascade: ['all'])]
+    private Collection $guests;
+
+    #[ORM\OneToOne(cascade: ['persist'])]
+    #[ORM\JoinColumn(referencedColumnName: 'id')]
+    public Guest $self;
+
+    public function __construct()
+    {
+        $this->guests = new ArrayCollection();
+    }
+
+    public static function fromEmail(string $email): self
+    {
+        $user = new self;
+        $user->email = $email;
+        return $user;
+    }
+
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
@@ -50,7 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getAddress(): Address
     {
-        return new Address(address: $this->email, name: $this->name);
+        return new Address(address: $this->email, name: $this->getName());
     }
 
     public function getRoles(): array
@@ -75,5 +91,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // no-op
+    }
+
+    /**
+     * @return Collection<int, Guest>
+     */
+    public function getGuests(): Collection
+    {
+        return $this->guests;
+    }
+
+    public function addGuest(string|Guest $guest): static
+    {
+        if (is_string($guest)) {
+            $guest = Guest::fromName($guest);
+        }
+
+        if (!$this->guests->contains($guest)) {
+            $this->guests->add($guest);
+            $guest->manager = $this;
+        }
+
+        return $this;
+    }
+
+    public function removeGuest(Guest $guest): static
+    {
+        if ($this->guests->removeElement($guest)) {
+            // set the owning side to null (unless already changed)
+            if ($guest->manager === $this) {
+                $guest->manager = null;
+            }
+        }
+
+        return $this;
+    }
+
+    public function identifiesAs(string|Guest $guest): static
+    {
+        if (is_string($guest)) {
+            $guest = Guest::fromName($guest);
+        }
+
+        $this->self = $guest;
+        $this->addGuest($guest);
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->self->name;
+    }
+
+    public function isGuest(Guest $guest): bool
+    {
+        return $this->self->isGuest($guest);
     }
 }

@@ -10,9 +10,46 @@
             <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{{ 'invitation.title'|trans }}</h1>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                    <p class="mt-6">Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque erat velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet vitae sed turpis id.</p>
-                    <p class="mt-8">Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit molestie auctor fermentum dignissim. Lacus diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem vel integer orci.</p>
-                    <p class="mt-8">Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit molestie auctor fermentum dignissim. Lacus diam tincidunt ac cursus in vel. Mauris varius vulputate et ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem vel integer orci.</p>
+                    <p class="mt-6">
+                        {{ 'invitation.introduction'|trans({'name': app.user.name, 'partySize': app.user.guests.count}) }}
+                    </p>
+
+                    <h2 class="mt-8 text-xl font-semibold leading-6 text-gray-900">
+                        {{ 'invitation.attendance.title'|trans }}
+                    </h2>
+                    <p class="mt-2">
+                        {{ 'invitation.attendance.introduction'|trans }}
+                    </p>
+
+                    {% for event in events|sort((a, b) => a.start <=> b.start) %}
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold leading-6 text-gray-900">
+                                {{ (event.name ~ '.title')|trans }}
+                                <span class="text-base text-gray-400 ml-2">
+                                    {{ event.start|format_datetime(pattern='EEEE HH:mm') }}
+                                </span>
+                            </h3>
+                            <p class="mt-2">
+                                {{ (event.name ~ '.description')|trans }}
+                            </p>
+
+                            {% for guest in app.user.guests %}
+                                <p>
+                                    {% if app.user.isGuest(guest) %}
+                                        <strong>{{ guest.name }}</strong>
+                                    {% else %}
+                                        <em>{{ guest.name }}</em>
+                                    {% endif %}
+
+                                    {% if guest.events.contains(event) %}
+                                        Attending
+                                    {% else %}
+                                        Not attending
+                                    {% endif %}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
                 <div>
                     <img
@@ -25,11 +62,11 @@
         <dl class="mt-10 grid grid-cols-2 gap-8 border-t border-gray-900/10 pt-10 sm:grid-cols-4">
             <div>
                 <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.start'|trans }}</dt>
-                <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(event_date)|format_datetime('full', 'short') }}</dd>
+                <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(events['pre-party'].start)|format_datetime('full', 'short') }}</dd>
             </div>
             <div>
                 <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.ceremony'|trans }}</dt>
-                <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(wedding_date)|format_datetime('full', 'short') }}</dd>
+                <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(events.ceremony.start)|format_datetime('full', 'short') }}</dd>
             </div>
             <div>
                 <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.rsvps'|trans }}</dt>
