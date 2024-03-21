@@ -36,6 +36,7 @@ services:
       MAILER_DSN: smtp://null:null@mail:1025
     build:
       args:
+        APK_PACKAGES: git symfony-cli
         PHP_EXTENSIONS: apcu intl opcache zip pdo_mysql xdebug @composer
     volumes:
       - ./docker/php/phpstorm/coverage:/opt/phpstorm-coverage
