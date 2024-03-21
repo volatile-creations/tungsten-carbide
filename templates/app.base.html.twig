@@ -13,6 +13,14 @@
             </div>
         </header>
         <main>
+            {% for message in app.flashes('success') %}
+                <div class="mx-auto mt-6 max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="rounded-md bg-green-50 p-4">
+                        <p class="text-lg font-medium text-green-800">{{ message }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
             <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                 {% block content %}{% endblock %}
             </div>

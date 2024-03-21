@@ -16,7 +16,10 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements
+    UserInterface,
+    PasswordAuthenticatedUserInterface,
+    GuestManager
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME)]

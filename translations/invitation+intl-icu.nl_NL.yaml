@@ -9,7 +9,7 @@ invitation:
     address: Locatie
     introduction: >-
         Hey {name}! We hopen dat jij {partySize, select,
-            0 {ons gaat}
+            1 {ons gaat}
             other {en je gezelschap ons gaan}
         } vergezellen op onze bruiloft!
     attendance:
@@ -18,12 +18,14 @@ invitation:
             Laat ons weten welke delen van de bruiloft je bij wil wonen.
             Anders dan gebruikelijk, hebben we de uitnodiging opgesplitst, zodat
             ieder voor zich kan bepalen hoeveel van de bruiloft je bijwoont.
+        submit: Bevestig aanwezigheid
+        success: Je aanwezigheid is bevestigd!
 
 pre-party:
     title: Nacht van vermaak
     description: >-
         Leer elkaar kennen en maak jezelf thuis.
-        Je blijft slapen en zit de ochtend van de bruiloft bij ons aan de
+        We genieten samen van avondeten, je blijft slapen en zit de ochtend van de bruiloft bij ons aan de
         ontbijttafel.
 
 lunch:
@@ -32,11 +34,11 @@ lunch:
 
 ceremony:
     title: Trouwceremonie
-    description: Els & Jan-Marten gaan trouwen
+    description: Els & Jan-Marten gaan trouwen.
 
 party:
     title: Feest en gekkigheid
-    description: Eten, drinken, entertainment. Waar we voor kwamen,
+    description: Eten, drinken, entertainment. Waar we voor kwamen.
 
 after-party:
     title: De volgende dag

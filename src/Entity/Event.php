@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+class Event implements GuestManager
 {
     #[ORM\Id]
     #[ORM\Column(length: 20)]

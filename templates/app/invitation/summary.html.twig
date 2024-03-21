@@ -1,0 +1,34 @@
+{% trans_default_domain 'invitation' %}
+<dl class="mt-10 grid grid-cols-2 gap-8 border-t border-gray-900/10 pt-10 sm:grid-cols-4">
+    <div>
+        <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.start'|trans }}</dt>
+        <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(preParty.start)|format_datetime('full', 'short') }}</dd>
+    </div>
+    <div>
+        <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.ceremony'|trans }}</dt>
+        <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ date(ceremony.start)|format_datetime('full', 'short') }}</dd>
+    </div>
+    <div>
+        <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.rsvps'|trans }}</dt>
+        <dd class="mt-2 text-3xl font-bold leading-10 tracking-tight text-gray-900">{{ ceremony.guests.count }} / {{ numTotalGuests }}</dd>
+    </div>
+    <div>
+        <dt class="text-sm font-semibold leading-6 text-gray-600">{{ 'invitation.address'|trans }}</dt>
+        <dd class="mt-2 tracking-tight text-gray-900">
+            <a href="https://maps.app.goo.gl/8iFbsFwzNvWPvjtt8" target="_blank" rel="nofollow noreferrer" class="hover:text-violet-500 flex items-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+
+                <div>
+                    <strong>Camping 't Vlintenholt</strong><br>
+                    <span class="block text-sm">
+                        Borgerderweg 17<br>
+                        7873 TC Odoorn
+                    </span>
+                </div>
+            </a>
+        </dd>
+    </div>
+</dl>

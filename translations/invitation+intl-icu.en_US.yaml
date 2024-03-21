@@ -9,7 +9,7 @@ invitation:
     address: Location
     introduction: >-
         Hey {name}! We sincerely hope to have you {partySize, select,
-            0 {}
+            1 {}
             other {and your party}
         } join us for our wedding!
     attendance:
@@ -18,12 +18,14 @@ invitation:
             Please let us know what parts of our wedding you would like to attend.
             Unlike other invitations, we split up the event such that everyone
             can choose for themselves what parts of the wedding they want to attend.
+        submit: Confirm attendance
+        success: Your attendance has been confirmed!
 
 pre-party:
     title: Entertainment night
     description: >-
         Getting to know each other and settling in.
-        You stay the night and share breakfast with us on the day of the wedding.
+        We're having dinner together, you stay the night and share breakfast with us on the day of the wedding.
 
 lunch:
     title: Pre-wedding lunch
@@ -31,7 +33,7 @@ lunch:
 
 ceremony:
     title: Wedding ceremony
-    description: Els & Jan-Marten will be wed
+    description: Els & Jan-Marten will be wed.
 
 party:
     title: Party and shenanigans
@@ -39,4 +41,4 @@ party:
 
 after-party:
     title: The day after
-    description: Waking up, breakfast, cleaning up
+    description: Waking up, breakfast, cleaning up.

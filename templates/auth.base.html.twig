@@ -32,7 +32,7 @@
                         <div class="w-screen max-w-sm flex-auto rounded-md bg-white p-4 text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
                             {% for locale in app.enabled_locales %}
                                 {% set localeLabel = ('locale.' ~ locale ~ '.long')|trans({}, 'intl', locale) %}
-                                <div class="relative rounded-lg p-4 hover:bg-gray-50{% if locale == app.locale %} bg-indigo-50{% endif %}">
+                                <div class="relative rounded-lg p-4 hover:bg-gray-50{% if locale == app.locale %} bg-violet-50{% endif %}">
                                     <a href="{{ path(app.current_route, app.current_route_parameters|merge({'locale': locale})) }}" class="font-semibold text-gray-900">
                                         <object data="{{ asset('locales/' ~ locale ~ '.svg') }}" type="image/svg+xml" class="h-4 w-auto rounded inline mr-1"></object>
                                         {{ localeLabel }}
@@ -55,7 +55,7 @@
             <div class="sm:mx-auto sm:w-full sm:max-w-sm bg-white p-6 rounded">
                 <div>
                     {% block card_icon %}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto h-16 w-auto text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto h-16 w-auto text-violet-600">
                             {% block card_icon_path %}
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             {% endblock %}
